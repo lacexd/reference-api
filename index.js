@@ -97,5 +97,5 @@ app.use(router);
 
 connection.on('error', () => {});
 connection.once('open', () => {
-    app.listen(3000, () => {});
+    app.listen(process.env.PORT || 3000, () => {});
 });
