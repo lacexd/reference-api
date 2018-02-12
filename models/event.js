@@ -2,21 +2,27 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const EventSchema = new Schema({
-    address: {
+    name: {
         type: 'String',
-        default: ''
+        default: '',
+        required: true
     },
-    guestNumber: {
-        type: 'Number',
-        default: 0
+    startDate: {
+        type: 'Date',
+        required: true
+    },
+    location: {
+        type: 'String',
+        default: '',
+        required: true
     },
     type: {
+        type: Schema.ObjectId,
+        ref: 'EventType'
+    },
+    category: {
         type: 'String',
         enum: ['selfSponsored', 'hostSponsored']
-    },
-    paymentType: {
-        type: 'String',
-        enum: ['exact', 'equal']
     },
     host: {
         type: Schema.ObjectId,
@@ -26,14 +32,42 @@ const EventSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'User'
     },
-    active: {
+    freeUsers: [{
+        type: Schema.ObjectId,
+        ref: 'User'
+    }],
+    isActive: {
         type: 'Boolean',
         default: true
     },
-    occurence: {
+    isItemRegistry: {
+        type: 'Boolean',
+        default: true
+    },
+    itemRegistry: [{
+        type: Schema.ObjectId,
+        ref: 'ItemRegistry'
+    }],
+    eventLength: {
         type: 'Number',
         default: 0
-    }
+    },
+    attendees: [{
+        type: Schema.ObjectId,
+        ref: 'Attendee'
+    }],
+    isSettlementRequired: {
+        type: 'Boolean',
+        default: true
+    },
+    isVerificationRequired: {
+        type: 'Boolean',
+        default: true
+    },
+    payments: [{
+        type: Schema.ObjectId,
+        ref: 'Payment'
+    }],
 });
 
 mongoose.model('Event', EventSchema);

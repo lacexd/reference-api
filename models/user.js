@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const countries = require('../static/countries');
+const currencies = countries.map((v) => {
+    return v.currency[0];
+});
 
 const UserSchema = new Schema({
     phoneNumber: {
@@ -40,7 +44,32 @@ const UserSchema = new Schema({
     },
     temporaryCode: {
         type: 'Number'
+    },
+    currency: {
+        type: 'String',
+        enum: currencies
+    },
+    country: {
+        type: 'String'
     }
+});
+
+UserSchema.pre('save', function(next) {
+    let countryIdMap = countries.map((v) => {
+        return {
+            code: v.callingCode[0],
+            name: v.cca2
+        };
+    });
+    if (this.phoneNumber) {
+        countryIdMap.forEach((v) => {
+            if (this.phoneNumber.indexOf('+' + v.code) === 0){
+                this.country = v.name;
+            }
+        });
+    }
+    // next(new Error('Invalid password'));
+    next();
 });
 
 mongoose.model('User', UserSchema);

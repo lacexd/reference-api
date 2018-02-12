@@ -16,9 +16,13 @@ router.post('/sms', authRoute.generateCodeForPhoneNumber);
 
 //event creation and maintenance
 router.post('/event', ensure, eventRoute.createEvent);
+router.post('/event:id', ensure, eventRoute.updateEvent);
+router.post('/event:id', ensure, eventRoute.getEventById);
+router.post('/event/payment/:id', ensure, eventRoute.addPayment);
+router.post('/event/invite/:id', ensure, eventRoute.inviteUser);
 router.get('/usersEvents', ensure, eventRoute.getUsersEvents);
-router.get('invitedEvents', ensure, eventRoute.getInvitedEvents);
-router.get('createdEvents', ensure, eventRoute.getUsersEvents);
+router.get('/invitedEvents', ensure, eventRoute.getInvitedEvents);
+router.get('/createdEvents', ensure, eventRoute.getUsersEvents);
 
 
 
