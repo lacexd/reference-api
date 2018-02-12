@@ -116,7 +116,7 @@ const authRoute = {
             User.findOne({
                 phoneNumber: paymentData.reciever
             }, (err, user) => {
-                if (err) {
+                if (err && user) {
                     res.send(err);
                 } else {
                     paymentData.reciever = user.id;
