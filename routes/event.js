@@ -74,7 +74,20 @@ const authRoute = {
 
     getInvitedEvents(req, res) {
         User.findById(req.user.id)
-            .populate('invitedEvents')
+            .populate({
+                path: 'invitedEvents',
+                populate: {
+                    path: 'attendees',
+                    model: 'Attendee'
+                },
+            })
+            .populate({
+                path: 'createdEvents',
+                populate: {
+                    path: 'payments',
+                    model: 'Payment'
+                }
+            })
             .exec((err, user) => {
                 res.send(user.invitedEvents);
             });
@@ -91,9 +104,9 @@ const authRoute = {
                 attendeeData.status = 'default';
                 let attendee = new Attendee(attendeeData);
                 attendee.save((err) => {
-                    if(err){
+                    if (err) {
                         res.send(err);
-                    }else{
+                    } else {
                         event.attendees.push(attendee.id);
                         event.save((err) => {
                             if (err) res.send(err);
@@ -103,13 +116,13 @@ const authRoute = {
                 });
                 user.invitedEvents.push(event.id);
                 user.save((err) => {
-                    if(err) res.send(err);
+                    if (err) res.send(err);
                 });
             });
         });
     },
 
-    addPayment(req, res) {
+    addExactPayment(req, res) {
         Event.findById(req.params.id, (err, event) => {
             const paymentData = req.body;
             paymentData.submitter = req.user.id;
