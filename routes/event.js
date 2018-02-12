@@ -82,7 +82,7 @@ const authRoute = {
                 },
             })
             .populate({
-                path: 'createdEvents',
+                path: 'invitedEvents',
                 populate: {
                     path: 'payments',
                     model: 'Payment'
