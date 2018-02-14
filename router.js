@@ -16,8 +16,8 @@ router.post('/sms', authRoute.generateCodeForPhoneNumber);
 
 //event creation and maintenance
 router.post('/event', ensure, eventRoute.createEvent);
-router.post('/event:id', ensure, eventRoute.updateEvent);
-router.post('/event:id', ensure, eventRoute.getEventById);
+router.post('/event/:id', ensure, eventRoute.updateEvent);
+router.get('/event/:id', ensure, eventRoute.getEventById);
 router.post('/event/payment/:id', ensure, eventRoute.addExactPayment);
 router.post('/event/invite/:id', ensure, eventRoute.inviteUser);
 router.get('/usersEvents', ensure, eventRoute.getUsersEvents);
