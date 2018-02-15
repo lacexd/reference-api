@@ -7,15 +7,24 @@ const authRoute = {
     createEvent(req, res) {
         const event = new Event(validators.newEvent(req.body));
         event.save((err) => {
-            if(err) return res.send(err);
+            if (err) return res.send(err);
         });
         User.findById(req.user.id, (err, user) => {
-            if(err) return res.send(err);
+            if (err) return res.send(err);
             user.createdEvents.push(event.id);
             user.save((err) => {
-                if(err) return res.send(err);
+                if (err) return res.send(err);
                 res.send(event);
             });
+        });
+    },
+
+    getEveryEvent(req, res) {
+        Event.find({
+            _id: req.user.invitedEvents.concat(req.user.createdEvents).map((v) => mongoose.Types.ObjectId(v))
+        }, (err, events) => {
+            if (err) return res.send(err);
+            res.send(events);
         });
     },
 
@@ -24,14 +33,14 @@ const authRoute = {
             res.send('id is missing');
         } else {
             Event.findById(req.params.id, (err, event) => {
-                if(err) return res.send(err);
+                if (err) return res.send(err);
                 for (let i in event) {
                     if (req.body[i]) {
                         event[i] = req.body[i];
                     }
                 }
                 event.save((err) => {
-                    if(err) return res.send(err);
+                    if (err) return res.send(err);
                     res.send(event);
                 });
             });
@@ -40,7 +49,7 @@ const authRoute = {
 
     getEventById(req, res) {
         Event.findById(req.params.id, (err, event) => {
-            if(err) return res.send(err);
+            if (err) return res.send(err);
             res.send(event);
         });
     },
@@ -62,7 +71,7 @@ const authRoute = {
                 }
             })
             .exec((err, user) => {
-                if(err) return res.send(err);
+                if (err) return res.send(err);
                 res.send(user.createdEvents);
                 // Attendee.populate(user.createdEvents, {
                 //     path: 'attendees'
@@ -89,14 +98,14 @@ const authRoute = {
                 }
             })
             .exec((err, user) => {
-                if(err) return res.send(err);
+                if (err) return res.send(err);
                 res.send(user.invitedEvents);
             });
     },
 
     inviteUser(req, res) {
         Event.findById(req.params.id, (err, event) => {
-            if(err) return res.send(err);
+            if (err) return res.send(err);
             User.findOne({
                 phoneNumber: req.body.phoneNumber
             }, (err, user) => {
@@ -106,7 +115,7 @@ const authRoute = {
                 attendeeData.status = 'default';
                 let attendee = new Attendee(attendeeData);
                 attendee.save((err) => {
-                    if(err) return res.send(err);
+                    if (err) return res.send(err);
                     event.attendees.push(attendee.id);
                     event.save((err) => {
                         if (err) res.send(err);
@@ -123,7 +132,7 @@ const authRoute = {
 
     addExactPayment(req, res) {
         Event.findById(req.params.id, (err, event) => {
-            if(err) return res.send(err);
+            if (err) return res.send(err);
             const paymentData = req.body;
             paymentData.submitter = req.user.id;
             User.findOne({
@@ -151,6 +160,18 @@ const authRoute = {
                 }
             });
         });
+    },
+
+    usersPayments(req, res){
+        Event
+            .find({
+                _id: req.user.invitedEvents.concat(req.user.createdEvents).map((v) => mongoose.Types.ObjectId(v))
+            })
+            .where('categry').equals('exact')
+            .exec((err, events) => {
+                if (err) return res.send(err);
+                res.send(events);
+            });
     }
 };
 

@@ -20,6 +20,10 @@ const EventSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'EventType'
     },
+    splitType: {
+        type: 'String',
+        enum: ['exact', 'equal']
+    },
     category: {
         type: 'String',
         enum: ['selfSponsored', 'hostSponsored']
