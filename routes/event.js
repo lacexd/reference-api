@@ -167,10 +167,35 @@ const authRoute = {
             .find({
                 _id: req.user.invitedEvents.concat(req.user.createdEvents).map((v) => mongoose.Types.ObjectId(v))
             })
-            .where('categry').equals('exact')
+            .where('category').equals('exact')
             .exec((err, events) => {
                 if (err) return res.send(err);
                 res.send(events);
+            });
+    },
+
+    markEventAsDeleted(req, res){
+        var userId = req.user.id;
+        Event
+            .findById(req.params.id)
+            .populate({
+                path: 'attendees',
+                model: 'Attendee'
+            })
+            .exec((err, event) => {
+                if(err) return res.send(err);
+                var authorizedUserForEvent = event.attendees.find((v) => {
+                    return v.user.toString === userId && v.role === 'moderator';
+                });
+                if(authorizedUserForEvent){
+                    event.isMarkedAsDeleted = true;
+                    event.save((err) => {
+                        if(err) return res.send(err);
+                        res.send(201);
+                    });
+                }else{
+                    res.send('user is not authorized');
+                }
             });
     }
 };

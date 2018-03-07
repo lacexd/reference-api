@@ -4,7 +4,7 @@ const userRoute = require('./routes/user');
 const passport = require('passport');
 const authRoute = require('./routes/auth');
 const eventRoute = require('./routes/event');
-
+const paymentRoute = require('./routes/payment');
 //user creation and auth
 router.post('/signup', userRoute.signUp);
 router.post('/profile', ensure, userRoute.setProfile);
@@ -24,8 +24,10 @@ router.post('/event/invite/:id', ensure, eventRoute.inviteUser);
 router.get('/usersEvents', ensure, eventRoute.getUsersEvents);
 router.get('/invitedEvents', ensure, eventRoute.getInvitedEvents);
 router.get('/createdEvents', ensure, eventRoute.getUsersEvents);
+router.get('/markEventAsDeleted/:id', ensure, eventRoute.markEventAsDeleted);
+//payments
 
-
+router.get('/userPayments', ensure, paymentRoute.getSumOfPayments);
 
 module.exports = router;
 
