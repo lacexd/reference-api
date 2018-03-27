@@ -1,20 +1,24 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const currencies = require('./static/countries').map((v) => {
-    return v.currency[0];
-});
 
 const ItemSchema = new Schema({
     name: {
         type: 'String'
     },
-    cost: {
-        type: 'Number'
+    user: {
+        type: Schema.ObjectId,
+        ref: 'User'
     },
-    currency: {
-        type: 'String',
-        enum: currencies
+    //think about implementation
+    quantity: {
+        type: 'Number',
+        default: 1
+    },
+    assigned: {
+        type: Schema.ObjectId,
+        ref: 'User'
     }
+    //when user is assigned create a payment in payment table with link to this record
 });
 
 mongoose.model('ItemRegistry', ItemSchema);

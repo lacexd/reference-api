@@ -10,6 +10,7 @@ const authRoute = {
             if (err) return res.send(err);
         });
         User.findById(req.user.id, (err, user) => {
+            //IMPLEMENT - add creator to attendees as moderator WITH STATUS ACCEPTED
             if (err) return res.send(err);
             user.createdEvents.push(event.id);
             user.save((err) => {

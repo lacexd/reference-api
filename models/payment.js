@@ -20,6 +20,19 @@ const PaymentSchema = new Schema({
     reciever: {
         type: Schema.ObjectId,
         ref: 'User'
+    },
+    expenseFor: {
+        type: 'String'
+    },
+    quantity: {
+        type: 'Number'
+    },
+    status: {
+        type: 'String',
+        enum: ['initial', 'payed', 'recieved']
+    },
+    isApproved: {
+        type: 'Boolean'
     }
 });
 

@@ -11,19 +11,24 @@ const EventSchema = new Schema({
         type: 'Date',
         required: true
     },
+    //ui sends hours - calculate on the backend
+    endTime: {
+        type: 'Date'
+    },
     location: {
         type: 'String',
         default: '',
         required: true
     },
+    //dont forget to create a table
     type: {
         type: Schema.ObjectId,
         ref: 'EventType'
     },
-    splitType: {
-        type: 'String',
-        enum: ['exact', 'equal']
-    },
+    // splitType: {
+    //     type: 'String',
+    //     enum: ['exact', 'equal']
+    // },
     category: {
         type: 'String',
         enum: ['selfSponsored', 'hostSponsored']
@@ -36,13 +41,14 @@ const EventSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'User'
     },
-    freeUsers: [{
-        type: Schema.ObjectId,
-        ref: 'User'
-    }],
-    isActive: {
-        type: 'Boolean',
-        default: true
+    //is true if the createor and at least one attendee accepted
+    // isActive: {
+    //     type: 'Boolean',
+    //     default: false
+    // },
+    status: {
+        type: 'String',
+        enum: ['created', 'canceled', 'closed']
     },
     isItemRegistry: {
         type: 'Boolean',
@@ -52,10 +58,15 @@ const EventSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'ItemRegistry'
     }],
-    eventLength: {
+    //based on this we need to change the end date
+    length: {
         type: 'Number',
-        default: 0
+        default: 1
     },
+    // occurence: {
+    //     type: 'String',
+    //     enum: ['daily', 'weekly', 'monthly', 'yearly']
+    // },
     attendees: [{
         type: Schema.ObjectId,
         ref: 'Attendee'
@@ -64,7 +75,12 @@ const EventSchema = new Schema({
         type: 'Boolean',
         default: true
     },
+    //if true every payment needs approval
     isVerificationRequired: {
+        type: 'Boolean',
+        default: true
+    },
+    isMarkedAsDeleted: {
         type: 'Boolean',
         default: true
     },

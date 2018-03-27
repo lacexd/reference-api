@@ -26,8 +26,15 @@ router.get('/invitedEvents', ensure, eventRoute.getInvitedEvents);
 router.get('/createdEvents', ensure, eventRoute.getUsersEvents);
 router.get('/markEventAsDeleted/:id', ensure, eventRoute.markEventAsDeleted);
 //payments
-
 router.get('/userPayments', ensure, paymentRoute.getSumOfPayments);
+router.get('/eventPayments/:eventId', ensure, paymentRoute.getEventPayments);
+
+//notes
+//fetch item registry related to an event
+//contact us
+//feedback
+
+
 
 module.exports = router;
 

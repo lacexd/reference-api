@@ -9,11 +9,16 @@ const AttendeeSchema = new Schema({
     },
     status: {
         type: 'String',
-        enum: ['accepted', 'declined', 'interested', 'default']
+        enum: ['accepted', 'declined', 'default'],
+        default: 'default'
     },
     role: {
         type: 'String',
-        enum: ['moderator', 'default', 'free']
+        enum: ['moderator', 'default']
+    },
+    isFree: {
+        type: 'Boolean',
+        default: false
     }
 });
 
