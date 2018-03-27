@@ -5,6 +5,7 @@ const passport = require('passport');
 const authRoute = require('./routes/auth');
 const eventRoute = require('./routes/event');
 const paymentRoute = require('./routes/payment');
+const itemRegistryRoute = require('./routes/itemRegistry');
 //user creation and auth
 router.post('/signup', userRoute.signUp);
 router.post('/profile', ensure, userRoute.setProfile);
@@ -25,9 +26,15 @@ router.get('/usersEvents', ensure, eventRoute.getUsersEvents);
 router.get('/invitedEvents', ensure, eventRoute.getInvitedEvents);
 router.get('/createdEvents', ensure, eventRoute.getUsersEvents);
 router.get('/markEventAsDeleted/:id', ensure, eventRoute.markEventAsDeleted);
+
 //payments
 router.get('/userPayments', ensure, paymentRoute.getSumOfPayments);
 router.get('/eventPayments/:eventId', ensure, paymentRoute.getEventPayments);
+
+//items
+router.post('/addItemToEvent/:id', ensure, itemRegistryRoute.addItem);
+router.get('/getItemsForAnEvent/:eventId', ensure, itemRegistryRoute.getItemsForAnEvent);
+router.post('/subscribeForItem/:id', ensure, itemRegistryRoute.signUpForItem);
 
 //notes
 //fetch item registry related to an event

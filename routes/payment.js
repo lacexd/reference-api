@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Payment = mongoose.model('Payment');
 const Event = mongoose.model('Event');
 // const Attendee = mongoose.model('Attendee');
-const money = require('money');
+//const money = require('money');
 const authRoute = {
     getSumOfPayments(req, res) {
         var userId = req.user.id;

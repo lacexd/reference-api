@@ -10,6 +10,7 @@ const user = require('./models/user');
 const event = require('./models/event');
 const payment = require('./models/payment');
 const attendee = require('./models/attendee');
+const itemRegistry = require('./models/itemRegistry');
 const User = mongoose.model('User');
 // const ObjectId = require('mongoose').Types.ObjectId;
 const router = require('./router');

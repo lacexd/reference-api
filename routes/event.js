@@ -136,34 +136,63 @@ const authRoute = {
             if (err) return res.send(err);
             const paymentData = req.body;
             paymentData.submitter = req.user.id;
-            User.findOne({
-                phoneNumber: paymentData.reciever
-            }, (err, user) => {
-                if (err && user) {
-                    res.send(err);
-                } else {
-                    paymentData.reciever = user.id;
-                    const payment = new Payment(validators.newPayment(paymentData));
-                    payment.save((err) => {
-                        if (err) {
+            if (paymentData.reciever) {
+                User.findOne({
+                    phoneNumber: paymentData.reciever
+                }, (err, user) => {
+                    if (err && user) {
+                        res.send(err);
+                    } else {
+                        paymentData.reciever = user.id;
+                        const payment = new Payment(validators.newPayment(paymentData));
+                        payment.save((err) => {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                event.payments.push(payment.id);
+                                event.save((err) => {
+                                    if (err) {
+                                        res.send(err);
+                                    } else {
+                                        res.send(event);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }else{
+                event.attendees.forEach((attendee) => {
+                    User.findOne({
+                        id: attendee
+                    }, (err, user) => {
+                        if (err && user) {
                             res.send(err);
                         } else {
-                            event.payments.push(payment.id);
-                            event.save((err) => {
+                            paymentData.reciever = user.id;
+                            const payment = new Payment(validators.newPayment(paymentData));
+                            payment.save((err) => {
                                 if (err) {
                                     res.send(err);
                                 } else {
-                                    res.send(event);
+                                    event.payments.push(payment.id);
+                                    event.save((err) => {
+                                        if (err) {
+                                            res.send(err);
+                                        } else {
+                                            res.send(event);
+                                        }
+                                    });
                                 }
                             });
                         }
                     });
-                }
-            });
+                });
+            }
         });
     },
 
-    usersPayments(req, res){
+    usersPayments(req, res) {
         Event
             .find({
                 _id: req.user.invitedEvents.concat(req.user.createdEvents).map((v) => mongoose.Types.ObjectId(v))
@@ -175,7 +204,7 @@ const authRoute = {
             });
     },
 
-    markEventAsDeleted(req, res){
+    markEventAsDeleted(req, res) {
         var userId = req.user.id;
         Event
             .findById(req.params.id)
@@ -184,17 +213,17 @@ const authRoute = {
                 model: 'Attendee'
             })
             .exec((err, event) => {
-                if(err) return res.send(err);
+                if (err) return res.send(err);
                 var authorizedUserForEvent = event.attendees.find((v) => {
                     return v.user.toString === userId && v.role === 'moderator';
                 });
-                if(authorizedUserForEvent){
+                if (authorizedUserForEvent) {
                     event.isMarkedAsDeleted = true;
                     event.save((err) => {
-                        if(err) return res.send(err);
+                        if (err) return res.send(err);
                         res.send(201);
                     });
-                }else{
+                } else {
                     res.send('user is not authorized');
                 }
             });
