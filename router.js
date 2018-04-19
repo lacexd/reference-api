@@ -6,6 +6,12 @@ const authRoute = require('./routes/auth');
 const eventRoute = require('./routes/event');
 const paymentRoute = require('./routes/payment');
 const itemRegistryRoute = require('./routes/itemRegistry');
+
+//models
+const mongoose = require('mongoose');
+const Event = mongoose.model('Event');
+
+
 //user creation and auth
 router.post('/signup', userRoute.signUp);
 router.post('/profile', ensure, userRoute.setProfile);
@@ -18,23 +24,24 @@ router.post('/sms', authRoute.generateCodeForPhoneNumber);
 //event creation and maintenance
 router.post('/event', ensure, eventRoute.createEvent);
 router.get('/events', ensure, eventRoute.getEveryEvent);
-router.post('/event/:id', ensure, eventRoute.updateEvent);
-router.get('/event/:id', ensure, eventRoute.getEventById);
-router.post('/event/payment/:id', ensure, eventRoute.addExactPayment);
-router.post('/event/invite/:id', ensure, eventRoute.inviteUser);
+router.post('/event/:eventId', ensure, isUserAdmin, eventRoute.updateEvent);
+router.get('/event/:eventId', ensure, isUserAttendee, eventRoute.getEventById);
+router.post('/event/payment/:eventId', ensure, isUserAttendee, eventRoute.addExactPayment);
+router.post('/event/invite/:eventId', ensure, isUserAttendee, eventRoute.inviteUser);
 router.get('/usersEvents', ensure, eventRoute.getUsersEvents);
 router.get('/invitedEvents', ensure, eventRoute.getInvitedEvents);
 router.get('/createdEvents', ensure, eventRoute.getUsersEvents);
-router.get('/markEventAsDeleted/:id', ensure, eventRoute.markEventAsDeleted);
+router.get('/markEventAsDeleted/:eventId', ensure, isUserAdmin, eventRoute.markEventAsDeleted);
+router.post('updateEventsAttendee/:attendeeId', ensure, isUserAdmin, eventRoute.updateEventsAttendee);
 
 //payments
 router.get('/userPayments', ensure, paymentRoute.getSumOfPayments);
-router.get('/eventPayments/:eventId', ensure, paymentRoute.getEventPayments);
+router.get('/eventPayments/:eventId', ensure, isUserAttendee, paymentRoute.getEventPayments);
 
 //items
-router.post('/addItemToEvent/:id', ensure, itemRegistryRoute.addItem);
-router.get('/getItemsForAnEvent/:eventId', ensure, itemRegistryRoute.getItemsForAnEvent);
-router.post('/subscribeForItem/:id', ensure, itemRegistryRoute.signUpForItem);
+router.post('/addItemToEvent/:id', ensure, isUserAttendee, itemRegistryRoute.addItem);
+router.get('/getItemsForAnEvent/:eventId', ensure, isUserAttendee, itemRegistryRoute.getItemsForAnEvent);
+router.post('/subscribeForItem/:id', ensure, isUserAttendee, itemRegistryRoute.signUpForItem);
 
 //notes
 //fetch item registry related to an event
@@ -53,9 +60,46 @@ function ensure(req, res, next) {
     }
 }
 
+function isUserAdmin(req, res, next) {
+    const eventId = req.params.eventId;
+    Event
+        .findById(eventId)
+        .populate({
+            path: 'attendees',
+            model: 'Attendee'
+        })
+        .exec((err, event) => {
+            if (err) return res.send(err);
+            let attendee = event.attendees.find((attendee) => {
+                return attendee.user.id.toString() === mongoose.Types.ObjectId(req.user.id).id.toString();
+            });
 
+            if (attendee.isCreator) next();
+            res.send('you are not authorized');
+        });
+}
 
+function isUserAttendee(req, res, next) {
+    const eventId = req.params.eventId;
+    Event
+        .findById(eventId)
+        .populate({
+            path: 'attendees',
+            model: 'Attendee'
+        })
+        .exec((err, event) => {
+            if (err) return res.send(err);
+            let attendee = event.attendees.find((attendee) => {
+                return attendee.user.id.toString() === mongoose.Types.ObjectId(req.user.id).id.toString();
+            });
 
+            if (attendee){
+                next();
+            }else{
+                res.send('you are not authorized');
+            }
+        });
+}
 
 
 // // *** user data ***

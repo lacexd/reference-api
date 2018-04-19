@@ -48,7 +48,8 @@ const EventSchema = new Schema({
     // },
     status: {
         type: 'String',
-        enum: ['created', 'canceled', 'closed']
+        enum: ['created', 'canceled', 'closed'],
+        default: 'created'
     },
     isItemRegistry: {
         type: 'Boolean',

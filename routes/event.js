@@ -15,7 +15,21 @@ const authRoute = {
             user.createdEvents.push(event.id);
             user.save((err) => {
                 if (err) return res.send(err);
-                res.send(event);
+                // res.send(event);
+            });
+            let attendee = new Attendee({
+                user: user.id,
+                status: 'accepted',
+                role: 'moderator',
+                isCreator: true
+            });
+            attendee.save((err) => {
+                if (err) return res.send(err);
+                event.attendees.push(attendee.id);
+                event.save((err) => {
+                    if (err) res.send(err);
+                    res.send(event);
+                });
             });
         });
     },
@@ -30,10 +44,10 @@ const authRoute = {
     },
 
     updateEvent(req, res) {
-        if (!req.params.id) {
+        if (!req.params.eventId) {
             res.send('id is missing');
         } else {
-            Event.findById(req.params.id, (err, event) => {
+            Event.findById(req.params.eventId, (err, event) => {
                 if (err) return res.send(err);
                 for (let i in event) {
                     if (req.body[i]) {
@@ -49,7 +63,7 @@ const authRoute = {
     },
 
     getEventById(req, res) {
-        Event.findById(req.params.id, (err, event) => {
+        Event.findById(req.params.eventId, (err, event) => {
             if (err) return res.send(err);
             res.send(event);
         });
@@ -105,7 +119,7 @@ const authRoute = {
     },
 
     inviteUser(req, res) {
-        Event.findById(req.params.id, (err, event) => {
+        Event.findById(req.params.eventId, (err, event) => {
             if (err) return res.send(err);
             User.findOne({
                 phoneNumber: req.body.phoneNumber
@@ -132,7 +146,7 @@ const authRoute = {
     },
 
     addExactPayment(req, res) {
-        Event.findById(req.params.id, (err, event) => {
+        Event.findById(req.params.eventId, (err, event) => {
             if (err) return res.send(err);
             const paymentData = req.body;
             paymentData.submitter = req.user.id;
@@ -161,7 +175,7 @@ const authRoute = {
                         });
                     }
                 });
-            }else{
+            } else {
                 event.attendees.forEach((attendee) => {
                     User.findOne({
                         id: attendee
@@ -207,7 +221,7 @@ const authRoute = {
     markEventAsDeleted(req, res) {
         var userId = req.user.id;
         Event
-            .findById(req.params.id)
+            .findById(req.params.eventId)
             .populate({
                 path: 'attendees',
                 model: 'Attendee'
@@ -227,7 +241,26 @@ const authRoute = {
                     res.send('user is not authorized');
                 }
             });
-    }
+    },
+
+    updateEventsAttendee(req, res){
+        const attendeeId = req.params.ateendeeId;
+        Attendee.findById(attendeeId, (err, attendee) => {
+            if(req.body.status){
+                attendee.status = req.body.status;
+            }
+            if(req.body.isFree){
+                attendee.isFree = req.body.isFree;
+            }
+            if(req.body.role){
+                attendee.role = req.body.role;
+            }
+            attendee.save((err) => {
+                if(err) return res.send(err);
+                res.send('updated');
+            });
+        });
+    },
 };
 
 const validators = {

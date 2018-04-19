@@ -19,6 +19,10 @@ const AttendeeSchema = new Schema({
     isFree: {
         type: 'Boolean',
         default: false
+    },
+    isCreator: {
+        type: 'Boolean',
+        default: false
     }
 });
 

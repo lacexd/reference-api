@@ -1,8 +1,9 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
-// const twilio = require('twilio');
-// const client = new twilio('AC8a30f945adda617b145996ec29599139', '846aa6c4a42df2920ab61a6ae776cfdb');
+const request = require('request');
+const twilio = require('twilio');
+const client = new twilio('AC391b0b7d951a40e2a88eb016fff051c7', 'b6538ee515a2f6ad73a290e3379b40c5');
 
 const authRoute = {
     generateCodeForPhoneNumber(req, res) {
@@ -10,15 +11,12 @@ const authRoute = {
             phoneNumber: req.body.phoneNumber
         }, (err, user) => {
             if (user) {
-                user.temporaryCode = getCode(1000, 10000);
-                // client.messages.create({
-                //     from: 'we need to get a number',
-                //     to: '+36303727512',
-                //     body: 'lol',
-                // }).then((message) => {
-                //     console.log(message);
-                // });
+                const generatedCode = getCode(1000, 10000);
+                user.temporaryCode = generatedCode;
                 console.log(user.temporaryCode);
+
+                whichProviderToUse(generatedCode, user.phoneNumber);
+
                 user.save((err) => {
                     if (!err) {
                         res.send('sms sent');
@@ -44,6 +42,35 @@ function getCode(minimum, maximum) {
         result = maximum;
     }
     return result;
+}
+
+function whichProviderToUse(code, phoneNumber){
+    var countryId = phoneNumber.substring(0, 3);
+    var usId = phoneNumber.substring(0, 2);
+    if(countryId === '+91'){
+        messageIndianNumber(code, phoneNumber);
+    }else if(usId === '+1'){
+        messageUSNumber(code, phoneNumber);
+    }else{
+        console.log(code);
+    }
+}
+
+function messageUSNumber(code, phoneNumber){
+    client.messages.create({
+        from: '+12108997218',
+        to: phoneNumber,
+        body: 'Hello, this is your code: ' + code,
+    }).then((message) => {
+        console.log(message);
+    });
+}
+
+function messageIndianNumber(code, phoneNumber){
+    var phoneNumberWithoutPlus = phoneNumber.toString().substring(3);
+    request.get('http://103.233.79.246/submitsms.jsp?user=DOVESF&key=2a0aacc172XX&mobile=' + phoneNumberWithoutPlus + '&message=' + code + '&senderid=INFOSM&accusage=1', {}, function(err, res) {
+        console.log(res);
+    });
 }
 
 module.exports = authRoute;
