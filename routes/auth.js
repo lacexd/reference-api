@@ -68,7 +68,7 @@ function messageUSNumber(code, phoneNumber){
 
 function messageIndianNumber(code, phoneNumber){
     var phoneNumberWithoutPlus = phoneNumber.toString().substring(3);
-    request.get('http://103.233.79.246/submitsms.jsp?user=DOVESF&key=2a0aacc172XX&mobile=' + phoneNumberWithoutPlus + '&message=' + code + '&senderid=INFOSM&accusage=1', {}, function(err, res) {
+    request.get('http://103.233.79.246//submitsms.jsp?user=RadyasLC&key=851a8dfba3XX&mobile=' + phoneNumberWithoutPlus + '&message=' + code + '&senderid=MSODDY&accusage=1', {}, function(err, res) {
         console.log(res);
     });
 }
