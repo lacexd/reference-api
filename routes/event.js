@@ -5,6 +5,7 @@ const Payment = mongoose.model('Payment');
 const Attendee = mongoose.model('Attendee');
 const authRoute = {
     createEvent(req, res) {
+        //calculate end date based on start date and event length
         const event = new Event(validators.newEvent(req.body));
         event.save((err) => {
             if (err) return res.send(err);
@@ -265,6 +266,14 @@ const authRoute = {
 
 const validators = {
     newEvent(body) {
+        if(body.days && !body.hours){
+            let startDate = new Date(body.startDate);
+            body.endDate = new Date(startDate.setTime(startDate.getTime() + body.days * 86400000));
+        }else if(body.hours && !body.days){
+            let startDate = new Date(body.startDate);
+            startDate.setHours(startDate.getHours() + body.hours);
+            body.endDate = startDate;
+        }
         return body;
     },
 

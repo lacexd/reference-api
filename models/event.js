@@ -7,32 +7,31 @@ const EventSchema = new Schema({
         default: '',
         required: true
     },
-    startDate: {
-        type: 'Date',
-        required: true
+    //dont forget to create a table
+    type: {
+        type: 'String'
     },
     //ui sends hours - calculate on the backend
-    endTime: {
-        type: 'Date'
+    category: {
+        type: 'String',
+        enum: ['contribution', 'sponsored']
     },
     location: {
         type: 'String',
         default: '',
         required: true
     },
-    //dont forget to create a table
-    type: {
-        type: Schema.ObjectId,
-        ref: 'EventType'
+    startDate: {
+        type: 'Date',
+        required: true
+    },
+    endDate: {
+        type: 'Date'
     },
     // splitType: {
     //     type: 'String',
     //     enum: ['exact', 'equal']
     // },
-    category: {
-        type: 'String',
-        enum: ['selfSponsored', 'hostSponsored']
-    },
     host: {
         type: Schema.ObjectId,
         ref: 'User'
@@ -40,6 +39,23 @@ const EventSchema = new Schema({
     creator: {
         type: Schema.ObjectId,
         ref: 'User'
+    },
+    isSettlementRequired: {
+        type: 'Boolean',
+        default: true
+    },
+    //if true every payment needs approval
+    isVerificationRequired: {
+        type: 'Boolean',
+        default: false
+    },
+
+    days: {
+        type: 'Number'
+    },
+
+    hours: {
+        type: 'Number'
     },
     //is true if the createor and at least one attendee accepted
     // isActive: {
@@ -60,10 +76,6 @@ const EventSchema = new Schema({
         ref: 'ItemRegistry'
     }],
     //based on this we need to change the end date
-    length: {
-        type: 'Number',
-        default: 1
-    },
     // occurence: {
     //     type: 'String',
     //     enum: ['daily', 'weekly', 'monthly', 'yearly']
@@ -72,18 +84,9 @@ const EventSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Attendee'
     }],
-    isSettlementRequired: {
-        type: 'Boolean',
-        default: true
-    },
-    //if true every payment needs approval
-    isVerificationRequired: {
-        type: 'Boolean',
-        default: true
-    },
     isMarkedAsDeleted: {
         type: 'Boolean',
-        default: true
+        default: false
     },
     payments: [{
         type: Schema.ObjectId,
