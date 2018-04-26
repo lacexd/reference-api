@@ -69,7 +69,7 @@ const EventSchema = new Schema({
     },
     isItemRegistry: {
         type: 'Boolean',
-        default: true
+        default: false
     },
     itemRegistry: [{
         type: Schema.ObjectId,
