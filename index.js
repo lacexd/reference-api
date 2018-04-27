@@ -49,13 +49,15 @@ passport.use(new Strategy({
     User.findOne({
         phoneNumber: phoneNumber
     }, (err, user) => {
-        console.log("ye its coming here my code just sucks");
         if (err) {
             return cb(err);
         }
         if (!user) {
             return cb(null, false);
         }
+        console.log(user.temporaryCode === code);
+        console.log(user.temporaryCode);
+        console.log(code);
         if (!user.temporaryCode === code) {
             return cb(null, false);
         }
