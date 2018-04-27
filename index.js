@@ -55,10 +55,7 @@ passport.use(new Strategy({
         if (!user) {
             return cb(null, false);
         }
-        console.log(user.temporaryCode === code);
-        console.log(user.temporaryCode);
-        console.log(code);
-        if (!user.temporaryCode === code) {
+        if (user.temporaryCode !== code) {
             return cb(null, false);
         }
         return cb(null, user);
