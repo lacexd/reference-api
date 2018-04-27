@@ -41,7 +41,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-
+//device id
 passport.use(new Strategy({
     usernameField: 'phoneNumber',
     passwordField: 'code'
@@ -49,6 +49,7 @@ passport.use(new Strategy({
     User.findOne({
         phoneNumber: phoneNumber
     }, (err, user) => {
+        console.log("ye its coming here my code just sucks");
         if (err) {
             return cb(err);
         }
@@ -93,5 +94,5 @@ app.use(router);
 
 connection.on('error', () => {});
 connection.once('open', () => {
-    app.listen(process.env.PORT || 3000, () => {});
+    app.listen(process.env.PORT || 3343, () => {});
 });
