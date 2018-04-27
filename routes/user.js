@@ -2,20 +2,22 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
 const userRoute = {
-    signUp(req, res) {
+    signUp(req, res, next) {
         var userData = req.body;
         User.find({
             phoneNumber: userData.phoneNumber
         }, (err, user) => {
             if (user.length !== 0) {
-                res.send('exists');
+                // res.send('exists');
+                next();
             } else {
                 var newUser = new User(userData);
                 newUser.save((err) => {
                     if (err) {
                         res.send('error');
                     } else {
-                        res.send(201);
+                        // res.send(201);
+                        next();
                     }
                 });
             }

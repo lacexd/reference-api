@@ -19,7 +19,7 @@ router.get('/profile', ensure, userRoute.getProfile);
 router.post('/login', passport.authenticate('local', {}), (req, res) => {
     res.send('success');
 });
-router.post('/sms', authRoute.generateCodeForPhoneNumber);
+router.post('/sms', userRoute.signUp, authRoute.generateCodeForPhoneNumber);
 
 //event creation and maintenance
 router.post('/event', ensure, eventRoute.createEvent);
