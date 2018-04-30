@@ -3,12 +3,13 @@ const Event = mongoose.model('Event');
 const User = mongoose.model('User');
 const Payment = mongoose.model('Payment');
 const Attendee = mongoose.model('Attendee');
+const format = require('../lib/response-format');
 const authRoute = {
     createEvent(req, res) {
         //calculate end date based on start date and event length
         const event = new Event(validators.newEvent(req.body));
         event.save((err) => {
-            if (err) return res.send(err);
+            if (err) res.send(format.error(err));
         });
         User.findById(req.user.id, (err, user) => {
             //IMPLEMENT - add creator to attendees as moderator WITH STATUS ACCEPTED
@@ -25,11 +26,11 @@ const authRoute = {
                 isCreator: true
             });
             attendee.save((err) => {
-                if (err) return res.send(err);
+                if (err) return res.send(format.error(err));
                 event.attendees.push(attendee.id);
                 event.save((err) => {
-                    if (err) res.send(err);
-                    res.send(event);
+                    if (err) res.send(format.error(err));
+                    res.send(format.success(event, 'event created successfully'));
                 });
             });
         });
@@ -40,7 +41,7 @@ const authRoute = {
             _id: req.user.invitedEvents.concat(req.user.createdEvents).map((v) => mongoose.Types.ObjectId(v))
         }, (err, events) => {
             if (err) return res.send(err);
-            res.send(events);
+            res.send(format.success(events, 'events retrieved successfully'));
         });
     },
 

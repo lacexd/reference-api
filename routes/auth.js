@@ -4,6 +4,7 @@ const User = mongoose.model('User');
 const request = require('request');
 const twilio = require('twilio');
 const client = new twilio('AC391b0b7d951a40e2a88eb016fff051c7', 'b6538ee515a2f6ad73a290e3379b40c5');
+const format = require('../lib/response-format');
 
 const authRoute = {
     generateCodeForPhoneNumber(req, res) {
@@ -19,7 +20,8 @@ const authRoute = {
 
                 user.save((err) => {
                     if (!err) {
-                        res.send('sms sent');
+                        // res.send('sms sent');
+                        res.send(format.success({}, 'sms sent successfully'));
                     } else {
                         res.send(403);
                     }

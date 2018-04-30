@@ -34,7 +34,7 @@ mongoose.connect('mongodb://asd:asd@ds161032.mlab.com:61032/mydb', {
 });
 
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'file:///home/n4r4/apps/test/index.html');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -93,5 +93,5 @@ app.use(router);
 
 connection.on('error', () => {});
 connection.once('open', () => {
-    app.listen(process.env.PORT || 3343, () => {});
+    app.listen(process.env.PORT || 3000, () => {});
 });
