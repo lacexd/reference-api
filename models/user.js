@@ -9,6 +9,7 @@ const UserSchema = new Schema({
     phoneNumber: {
         type: 'String',
         default: '',
+        required: true
     },
     firstName: {
         type: 'String',
@@ -53,7 +54,8 @@ const UserSchema = new Schema({
         type: 'String'
     },
     deviceId: {
-        type: 'String'
+        type: 'String',
+        required: true
     }
 });
 
