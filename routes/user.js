@@ -8,8 +8,8 @@ const userRoute = {
             phoneNumber: userData.phoneNumber
         }, (err, user) => {
             if (user.length !== 0) {
-                // res.send('exists');
-                next();
+                res.send('exists');
+                // next();
             } else {
                 var newUser = new User(userData);
                 newUser.save((err) => {
