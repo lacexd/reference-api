@@ -13,7 +13,7 @@ const Event = mongoose.model('Event');
 
 
 //user creation and auth
-router.post('/signup', userRoute.signUp);
+// router.post('/signup', userRoute.signUp);
 router.post('/profile', ensure, userRoute.setProfile);
 router.get('/profile', ensure, userRoute.getProfile);
 router.post('/login', passport.authenticate('local', {}), (req, res) => {

@@ -51,6 +51,9 @@ const UserSchema = new Schema({
     },
     country: {
         type: 'String'
+    },
+    deviceId: {
+        type: 'String'
     }
 });
 
