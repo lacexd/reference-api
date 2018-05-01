@@ -16,7 +16,6 @@ const userRoute = {
                     if (err) {
                         res.send('error');
                     } else {
-                        // res.send(201);
                         next();
                     }
                 });

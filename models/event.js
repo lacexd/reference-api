@@ -7,7 +7,7 @@ const EventSchema = new Schema({
         default: '',
         required: true
     },
-    //dont forget to create a table
+
     type: {
         type: 'String'
     },

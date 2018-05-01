@@ -27,12 +27,12 @@ router.get('/events', ensure, eventRoute.getEveryEvent);
 router.post('/event/:eventId', ensure, isUserAdmin, eventRoute.updateEvent);
 router.get('/event/:eventId', ensure, isUserAttendee, eventRoute.getEventById);
 router.post('/event/payment/:eventId', ensure, isUserAttendee, eventRoute.addExactPayment);
-router.post('/event/invite/:eventId', ensure, isUserAttendee, eventRoute.inviteUser);
+router.post('/event/invite/:eventId', ensure, isUserAttendee, userRoute.signUp, eventRoute.inviteUser);
 router.get('/usersEvents', ensure, eventRoute.getUsersEvents);
 router.get('/invitedEvents', ensure, eventRoute.getInvitedEvents);
 router.get('/createdEvents', ensure, eventRoute.getUsersEvents);
 router.get('/markEventAsDeleted/:eventId', ensure, isUserAdmin, eventRoute.markEventAsDeleted);
-router.post('updateEventsAttendee/:attendeeId', ensure, isUserAdmin, eventRoute.updateEventsAttendee);
+router.post('/updateEventsAttendee/:attendeeId', ensure, isUserAdmin, eventRoute.updateEventsAttendee);
 
 //payments
 router.get('/userPayments', ensure, paymentRoute.getSumOfPayments);

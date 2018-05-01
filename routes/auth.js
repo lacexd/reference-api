@@ -21,9 +21,10 @@ const authRoute = {
                 user.save((err) => {
                     if (!err) {
                         // res.send('sms sent');
-                        res.send(format.success({}, 'sms sent successfully'));
+                        res.send(format.success(user, 'sms sent successfully'));
                     } else {
-                        res.send(403);
+                        // res.send(403);
+                        res.send(format.error(err));
                     }
                 });
             } else {
