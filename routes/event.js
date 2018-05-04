@@ -41,7 +41,35 @@ const authRoute = {
             _id: req.user.invitedEvents.concat(req.user.createdEvents).map((v) => mongoose.Types.ObjectId(v))
         }, (err, events) => {
             if (err) return res.send(err);
-            res.send(format.success(events, 'events retrieved successfully'));
+
+            var userId = req.user.id;
+            Payment.find({
+                $or: [{
+                    submitter: userId
+                }, {
+                    reciever: userId
+                }]
+            }, (err, payments) => {
+                if(err) return res.send(err);
+                res.send({
+                    Data: {
+                            events: events,
+                            payments: {
+                            toPay: payments.filter((v) => {
+                                // console.log(money(v.cost).from('USD').to('EUR'));
+                                return v.reciever.toString() === userId;
+                            }),
+                            toGet: payments.filter((v) => {
+                                return v.submitter.toString() === userId;
+                            })
+                        }
+                    },
+                    RespCode: 'SUCCESS',
+                    RespMessage: 'Data has fectched successfully'
+                });
+                // });
+            });
+            // res.send(format.success(events, 'events retrieved successfully'));
         });
     },
 

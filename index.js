@@ -93,5 +93,7 @@ app.use(router);
 
 connection.on('error', () => {});
 connection.once('open', () => {
-    app.listen(process.env.PORT || 3000, () => {});
+    app.listen(process.env.PORT || 3500, () => {
+        console.log('runnin fine on port: ' + 3500);
+    });
 });

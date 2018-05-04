@@ -6,7 +6,7 @@ const authRoute = require('./routes/auth');
 const eventRoute = require('./routes/event');
 const paymentRoute = require('./routes/payment');
 const itemRegistryRoute = require('./routes/itemRegistry');
-
+const hat = require('hat');
 //models
 const mongoose = require('mongoose');
 const Event = mongoose.model('Event');
@@ -17,7 +17,14 @@ const Event = mongoose.model('Event');
 router.post('/profile', ensure, userRoute.setProfile);
 router.get('/profile', ensure, userRoute.getProfile);
 router.post('/login', passport.authenticate('local', {}), (req, res) => {
-    res.send('success');
+    res.send({
+       Data:{
+           authToken: hat.rack()()
+       },
+       RespCode: "LOGINSUCCESS",
+       RespMessage: "User authenticated successfully"
+    })
+    // res.send('success');
 });
 router.post('/sms', userRoute.signUp, authRoute.generateCodeForPhoneNumber);
 
