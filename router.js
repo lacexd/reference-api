@@ -28,6 +28,11 @@ router.post('/login', passport.authenticate('local', {}), (req, res) => {
 });
 router.post('/sms', userRoute.signUp, authRoute.generateCodeForPhoneNumber);
 
+//joined endpoints
+router.get('/dashboard', ensure, ensure, eventRoute.getEveryEvent);
+
+
+
 //event creation and maintenance
 router.post('/event', ensure, eventRoute.createEvent);
 router.get('/events', ensure, eventRoute.getEveryEvent);
