@@ -9,16 +9,14 @@ const ItemSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'User'
     },
-    //think about implementation
     quantity: {
         type: 'Number',
         default: 1
     },
-    assigned: {
+    assignedTo: {
         type: Schema.ObjectId,
         ref: 'User'
     }
-    //when user is assigned create a payment in payment table with link to this record
 });
 
 mongoose.model('ItemRegistry', ItemSchema);

@@ -7,11 +7,9 @@ const EventSchema = new Schema({
         default: '',
         required: true
     },
-
     type: {
         type: 'String'
     },
-    //ui sends hours - calculate on the backend
     category: {
         type: 'String',
         enum: ['contribution', 'sponsored']
@@ -28,10 +26,6 @@ const EventSchema = new Schema({
     endDate: {
         type: 'Date'
     },
-    // splitType: {
-    //     type: 'String',
-    //     enum: ['exact', 'equal']
-    // },
     host: {
         type: Schema.ObjectId,
         ref: 'User'
@@ -40,28 +34,20 @@ const EventSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'User'
     },
-    isSettlementRequired: {
+    isExpensesAllowed: {
         type: 'Boolean',
         default: true
     },
-    //if true every payment needs approval
-    isVerificationRequired: {
+    isExpenseApprovalRequired: {
         type: 'Boolean',
         default: false
     },
-
     days: {
         type: 'Number'
     },
-
     hours: {
         type: 'Number'
     },
-    //is true if the createor and at least one attendee accepted
-    // isActive: {
-    //     type: 'Boolean',
-    //     default: false
-    // },
     status: {
         type: 'String',
         enum: ['created', 'canceled', 'closed'],
@@ -75,11 +61,6 @@ const EventSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'ItemRegistry'
     }],
-    //based on this we need to change the end date
-    // occurence: {
-    //     type: 'String',
-    //     enum: ['daily', 'weekly', 'monthly', 'yearly']
-    // },
     attendees: [{
         type: Schema.ObjectId,
         ref: 'Attendee'

@@ -32,17 +32,6 @@ const UserSchema = new Schema({
         type: 'String',
         default: ''
     },
-    invitedEvents: [{
-        type: Schema.ObjectId,
-        ref: 'Event'
-    }],
-    createdEvents: [{
-        type: Schema.ObjectId,
-        ref: 'Event'
-    }],
-    appInstalled: {
-        type: Boolean
-    },
     temporaryCode: {
         type: 'Number'
     },
@@ -56,7 +45,18 @@ const UserSchema = new Schema({
     deviceId: {
         type: 'String'
         // required: true
-    }
+    },
+    invitedEvents: [{
+        type: Schema.ObjectId,
+        ref: 'Event'
+    }],
+    createdEvents: [{
+        type: Schema.ObjectId,
+        ref: 'Event'
+    }],
+    appInstalled: {
+        type: Boolean
+    },
 });
 
 UserSchema.pre('save', function(next) {

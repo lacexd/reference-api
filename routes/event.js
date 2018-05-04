@@ -44,7 +44,8 @@ const authRoute = {
 			.populate({
 				path: 'attendees',
                 populate: {
-                    path: 'user'
+                    path: 'user',
+					select: 'phoneNumber'
                 }
 			})
 			.exec((err, events) => {

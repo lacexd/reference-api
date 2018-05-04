@@ -10,6 +10,10 @@ const PaymentSchema = new Schema({
         ref: 'User',
         required: true
     },
+    reciever: {
+        type: Schema.ObjectId,
+        ref: 'User'
+    },
     cost: {
         type: 'Number'
     },
@@ -17,11 +21,7 @@ const PaymentSchema = new Schema({
         type: 'String',
         enum: currencies
     },
-    reciever: {
-        type: Schema.ObjectId,
-        ref: 'User'
-    },
-    expenseFor: {
+    paidFor: {
         type: 'String'
     },
     quantity: {
@@ -29,10 +29,15 @@ const PaymentSchema = new Schema({
     },
     status: {
         type: 'String',
-        enum: ['initial', 'payed', 'recieved']
+        //expense and self will never change
+        // when someone enters cost status is expense -- never changes
+        // when someone pays money status is payment, when someone confirms the payment status is settled
+        // when someone submitter === reciever status is self -- never changes
+        enum: ['expense', 'payment', 'settled', 'self']
     },
     isApproved: {
-        type: 'Boolean'
+        type: 'Boolean',
+        default: false
     }
 });
 
