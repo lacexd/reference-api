@@ -63,13 +63,15 @@ UserSchema.pre('save', function(next) {
     let countryIdMap = countries.map((v) => {
         return {
             code: v.callingCode[0],
-            name: v.cca2
+            name: v.cca2,
+            currency: v.currency[0]
         };
     });
     if (this.phoneNumber) {
         countryIdMap.forEach((v) => {
             if (this.phoneNumber.indexOf('+' + v.code) === 0){
                 this.country = v.name;
+                this.currency = v.currency;
             }
         });
     }

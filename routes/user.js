@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
+const format = require('../lib/response-format');
 
 const userRoute = {
     signUp(req, res, next) {
@@ -11,6 +12,7 @@ const userRoute = {
                 // res.send('exists');
                 next();
             } else {
+                console.log(userData);
                 var newUser = new User(userData);
                 newUser.save((err) => {
                     if (err) {
@@ -28,7 +30,15 @@ const userRoute = {
             .populate('invitedEvents')
             .populate('createdEvents')
             .exec((err, user) => {
-                res.send(user);
+                res.send(format.success({
+                    phoneNumber: user.phoneNumber,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    gender: user.gender,
+                    email: user.email,
+                    address: user.address,
+                    currency: user.currency
+                }, 'User\'s profile fetched successfully'));
             });
     },
 

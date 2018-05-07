@@ -12,6 +12,10 @@ const mongoose = require('mongoose');
 const Event = mongoose.model('Event');
 
 
+router.get('/', (req, res) => {
+    res.sendFile(__dirname + '/Docbox.html');
+});
+
 //user creation and auth
 // router.post('/signup', userRoute.signUp);
 router.post('/profile', ensure, userRoute.setProfile);
@@ -45,6 +49,9 @@ router.get('/invitedEvents', ensure, eventRoute.getInvitedEvents);
 router.get('/createdEvents', ensure, eventRoute.getUsersEvents);
 router.get('/markEventAsDeleted/:eventId', ensure, isUserAdmin, eventRoute.markEventAsDeleted);
 router.post('/updateEventsAttendee/:attendeeId', ensure, isUserAdmin, eventRoute.updateEventsAttendee);
+router.get('/eventTypes', eventRoute.getEventTypes);
+
+
 
 //payments
 router.get('/userPayments', ensure, paymentRoute.getSumOfPayments);
@@ -59,8 +66,6 @@ router.post('/subscribeForItem/:id', ensure, isUserAttendee, itemRegistryRoute.s
 //fetch item registry related to an event
 //contact us
 //feedback
-
-
 
 module.exports = router;
 

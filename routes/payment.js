@@ -5,6 +5,7 @@ const Payment = mongoose.model('Payment');
 const Event = mongoose.model('Event');
 // const Attendee = mongoose.model('Attendee');
 //const money = require('money');
+const format = require('../lib/response-format');
 const authRoute = {
     getSumOfPayments(req, res) {
         var userId = req.user.id;
@@ -38,6 +39,15 @@ const authRoute = {
                 res.send(payments);
             });
         });
+    },
+
+    pay(req, res) {
+        Payment.findById(req.params.paymentId, (err, payment) => {
+            payment.status = 'settled';
+            payment.save((err) => {
+                res.send(format.error(err));
+            })
+        })
     }
 };
 

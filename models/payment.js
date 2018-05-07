@@ -33,7 +33,8 @@ const PaymentSchema = new Schema({
         // when someone enters cost status is expense -- never changes
         // when someone pays money status is payment, when someone confirms the payment status is settled
         // when someone submitter === reciever status is self -- never changes
-        enum: ['expense', 'payment', 'settled', 'self']
+        enum: ['expense', 'payment', 'settled', 'self'],
+        defaultsTo: 'expense'
     },
     isApproved: {
         type: 'Boolean',

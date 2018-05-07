@@ -8,6 +8,7 @@ const Strategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const user = require('./models/user');
 const event = require('./models/event');
+const eventType = require('./models/eventType');
 const payment = require('./models/payment');
 const attendee = require('./models/attendee');
 const itemRegistry = require('./models/itemRegistry');
@@ -18,6 +19,9 @@ const connection = mongoose.connection;
 const session = require('express-session');
 const uuidv1 = require('uuid/v1');
 const validator = require('express-validator');
+
+app.use('Docbox_files', express.static(__dirname + '/Docbox_files'));
+
 mongoose.connect('mongodb://asd:asd@ds161032.mlab.com:61032/mydb', {
     // server: {
     //     socketOptions: {
@@ -73,7 +77,9 @@ passport.deserializeUser(function(id, cb) {
     });
 });
 app.use(helmet());
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+    extended: true
+}));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
