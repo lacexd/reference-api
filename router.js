@@ -13,7 +13,11 @@ const Event = mongoose.model('Event');
 
 
 router.get('/', (req, res) => {
-    res.sendFile(__dirname + '/Docbox.html');
+    if (req.isAuthenticated()) {
+        res.sendFile(__dirname + '/Docbox.html');
+    } else {
+        res.sendFile(__dirname + '/login.html');
+    }
 });
 
 //user creation and auth
