@@ -30,16 +30,7 @@ const userRoute = {
             .populate('invitedEvents')
             .populate('createdEvents')
             .exec((err, user) => {
-                res.send(format.success({
-                    phoneNumber: user.phoneNumber,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    gender: user.gender,
-                    email: user.email,
-                    address: user.address,
-                    currency: user.currency,
-                    appInstalled: user.appInstalled
-                }, 'User\'s profile fetched successfully'));
+                res.send(format.success(user, 'User\'s profile fetched successfully'));
             });
     },
 
