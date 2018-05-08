@@ -37,7 +37,8 @@ const userRoute = {
                     gender: user.gender,
                     email: user.email,
                     address: user.address,
-                    currency: user.currency
+                    currency: user.currency,
+                    appInstalled: user.appInstalled
                 }, 'User\'s profile fetched successfully'));
             });
     },

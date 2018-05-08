@@ -1,0 +1,261 @@
+{
+	"info": {
+		"_postman_id": "97962e0b-bb4b-4b86-9c52-0e2eebc6dcd7",
+		"name": "soddy local",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:3500/login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"phoneNumber\": \"+36303727511\",\n\"code\": 4978\n}"
+				},
+				"url": {
+					"raw": "localhost:3500/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3500/dashboard",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:3500/dashboard",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"dashboard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3500/sms",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"phoneNumber\": \"+36303727511\",\n\"deviceId\": \"asdasdasd\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3500/sms",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"sms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3500/profile",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:3500/profile",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3500/event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"name\": \"testing again\",\n\"location\": \"somewhere\",\n\"startDate\": \"2012.12.12\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3500/event",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3500/event/payment/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"reciever\": \"+36303727511\",\n\"cost\": 1900,\n\"currency\": \"HUF\",\n\"status\": \"expense\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3500/event/payment/5aeddacb7c82887b0c92a43e",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"event",
+						"payment",
+						"5aeddacb7c82887b0c92a43e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3500/event/invite/5aeddacb7c82887b0c92a43e",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"phoneNumber\": \"+36000000000\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3500/event/invite/5aeddacb7c82887b0c92a43e",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"event",
+						"invite",
+						"5aeddacb7c82887b0c92a43e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3500/addItemToEvent/5aeddacb7c82887b0c92a43e",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\n\"name\": \"beer\",\n\"quantity\": 4\n},{\n\"name\": \"weed\",\n\"quantity\": 4\n}]"
+				},
+				"url": {
+					"raw": "localhost:3500/addItemToEvent/5aeddacb7c82887b0c92a43e",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"addItemToEvent",
+						"5aeddacb7c82887b0c92a43e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3500/event/5aeddacb7c82887b0c92a43e",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:3500/event/5aeddacb7c82887b0c92a43e",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"event",
+						"5aeddacb7c82887b0c92a43e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3500/createPaymentWithoutEvent",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"reciever\": \"+36303727512\" ,\n    \"cost\": 500,\n    \"name\": \"asd\",\n    \"currency\": \"HUF\",\n    \"quantity\": 1\n}"
+				},
+				"url": {
+					"raw": "localhost:3500/createPaymentWithoutEvent",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"createPaymentWithoutEvent"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
