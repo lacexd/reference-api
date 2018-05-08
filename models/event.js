@@ -73,6 +73,9 @@ const EventSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Payment'
     }],
+    currency: {
+      type: 'String'
+    }
 });
 
 mongoose.model('Event', EventSchema);

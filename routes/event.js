@@ -6,113 +6,135 @@ const Attendee = mongoose.model('Attendee');
 const EventType = mongoose.model('EventType');
 const format = require('../lib/response-format');
 const authRoute = {
-	createEvent(req, res) {
-		//calculate end date based on start date and event length
-		req.body.host = mongoose.Types.ObjectId(req.user.id);
-		req.body.creator = mongoose.Types.ObjectId(req.user.id);
-		const event = new Event(validators.newEvent(req.body));
-		event.save((err) => {
-			if (err) res.send(format.error(err));
-		});
-		User.findById(req.user.id, (err, user) => {
-			//IMPLEMENT - add creator to attendees as moderator WITH STATUS ACCEPTED
-			if (err) return res.send(format.error(err));
-			user.createdEvents.push(event.id);
-			user.save((err) => {
-				if (err) return res.send(format.error(err));
-				// res.send(event);
+		createEvent(req, res) {
+			//calculate end date based on start date and event length
+			req.body.host = mongoose.Types.ObjectId(req.user.id);
+			req.body.creator = mongoose.Types.ObjectId(req.user.id);
+			if(!req.body.currency){
+				req.body.currency = req.user.currency;
+			}
+			const event = new Event(validators.newEvent(req.body));
+			event.save((err) => {
+				if (err) res.send(format.error(err));
 			});
-			let attendee = new Attendee({
-				user: user.id,
-				status: 'accepted',
-				role: 'moderator',
-				isCreator: true
-			});
-			attendee.save((err) => {
+			User.findById(req.user.id, (err, user) => {
+				//IMPLEMENT - add creator to attendees as moderator WITH STATUS ACCEPTED
 				if (err) return res.send(format.error(err));
-				event.attendees.push(attendee.id);
-				event.save((err) => {
-					if (err) res.send(format.error(err));
-					res.send(format.success(event, 'event created successfully'));
+				user.createdEvents.push(event.id);
+				user.save((err) => {
+					if (err) return res.send(format.error(err));
+					// res.send(event);
+				});
+				let attendee = new Attendee({
+					user: user.id,
+					status: 'accepted',
+					role: 'moderator',
+					isCreator: true
+				});
+				attendee.save((err) => {
+					if (err) return res.send(format.error(err));
+					event.attendees.push(attendee.id);
+					event.save((err) => {
+						if (err) res.send(format.error(err));
+						res.send(format.success(event, 'event created successfully'));
+					});
 				});
 			});
-		});
-	},
+		},
 
-	getEveryEvent(req, res) {
-		Event
-			.find({
-				_id: req.user.invitedEvents.concat(req.user.createdEvents).map((v) => mongoose.Types.ObjectId(v))
-			})
-			.populate({
-				path: 'attendees',
-				populate: {
-					path: 'user',
-					select: 'phoneNumber'
-				},
-			})
-			.populate({
-				path: 'itemRegistry'
-			})
-			.exec((err, events) => {
-				if (err) return res.send(format.error(err));
-
-				var userId = req.user.id;
-				Payment
-					.find({
-						$or: [{
-							submitter: userId
-						}, {
-							reciever: userId
-						}]
-					})
-					.populate('user')
-					.exec((err, payments) => {
-						if (err) return res.send(format.error(err));
-						res.send({
-							Data: {
-								events: events,
-								payments: {
-									toPay: payments.filter((v) => {
-										// console.log(money(v.cost).from('USD').to('EUR'));
-										return v.reciever.toString() === userId;
-									}),
-									toGet: payments.filter((v) => {
-										return v.submitter.toString() === userId;
-									})
-								}
-							},
-							RespCode: 'SUCCESS',
-							RespMessage: 'Data has fectched successfully'
-						});
-					});
-			});
-	},
-
-	updateEvent(req, res) {
-		if (!req.params.eventId) {
-			res.send('id is missing');
-		} else {
-			Event.findById(req.params.eventId, (err, event) => {
-				if (err) return res.send(format.error(err));
-				for (let i in event) {
-					if (req.body[i]) {
-						event[i] = req.body[i];
+		getEveryEvent(req, res) {
+			Event
+				.find({
+					_id: req.user.invitedEvents.concat(req.user.createdEvents).map((v) => mongoose.Types.ObjectId(v))
+				})
+				.populate({
+					path: 'attendees',
+					populate: {
+						path: 'user',
+						select: 'phoneNumber'
+					},
+				})
+				.populate({
+					path: 'itemRegistry',
+					populate: {
+						path: 'user',
+						select: 'phoneNumber'
 					}
-				}
-				event.save((err) => {
+				})
+				.exec((err, events) => {
 					if (err) return res.send(format.error(err));
+
+					var userId = req.user.id;
+					Payment
+						.find({
+							$or: [{
+								submitter: userId
+							}, {
+								reciever: userId
+							}]
+						})
+						.populate('user')
+						.exec((err, payments) => {
+							if (err) return res.send(format.error(err));
+							res.send({
+								Data: {
+									events: events,
+									payments: {
+										toPay: payments.filter((v) => {
+											// console.log(money(v.cost).from('USD').to('EUR'));
+											return v.reciever.toString() === userId;
+										}),
+										toGet: payments.filter((v) => {
+											return v.submitter.toString() === userId;
+										})
+									}
+								},
+								RespCode: 'SUCCESS',
+								RespMessage: 'Data has fectched successfully'
+							});
+						});
+				});
+		},
+
+		updateEvent(req, res) {
+			if (!req.params.eventId) {
+				res.send('id is missing');
+			} else {
+				Event.findById(req.params.eventId, (err, event) => {
+					if (err) return res.send(format.error(err));
+					for (let i in event) {
+						if (req.body[i]) {
+							event[i] = req.body[i];
+						}
+					}
+					event.save((err) => {
+						if (err) return res.send(format.error(err));
+						res.send(event);
+					});
+				});
+			}
+		},
+
+		getEventById(req, res) {
+			Event.findById(req.params.eventId)
+				.populate({
+					path: 'attendees',
+					populate: {
+						path: 'user',
+						select: 'phoneNumber'
+					}
+				})
+				.populate({
+					path: 'itemRegistry',
+					populate: {
+						path: 'user',
+						select: 'phoneNumber'
+					},
+				}).exec((err, event) => {
+					if (err) return res.send(format.error(err));
+
 					res.send(event);
 				});
-			});
-		}
-	},
-
-	getEventById(req, res) {
-		Event.findById(req.params.eventId, (err, event) => {
-			if (err) return res.send(format.error(err));
-			res.send(event);
-		});
 	},
 
 	getUsersEvents(req, res) {

@@ -57,7 +57,7 @@ router.get('/usersEvents', ensure, eventRoute.getUsersEvents);
 router.get('/invitedEvents', ensure, eventRoute.getInvitedEvents);
 router.get('/createdEvents', ensure, eventRoute.getUsersEvents);
 router.get('/markEventAsDeleted/:eventId', ensure, isEventIdPresent, isUserAdmin, eventRoute.markEventAsDeleted);
-router.post('/updateEventsAttendee/:attendeeId', ensure, isUserAdmin, eventRoute.updateEventsAttendee);
+router.post('/updateEventsAttendee/:attendeeId', ensure, isAttendeeIdPresent, isUserAdmin, eventRoute.updateEventsAttendee);
 router.get('/eventTypes', eventRoute.getEventTypes);
 
 
@@ -65,6 +65,8 @@ router.get('/eventTypes', eventRoute.getEventTypes);
 //payments
 router.get('/userPayments', ensure, paymentRoute.getSumOfPayments);
 router.get('/eventPayments/:eventId', ensure, isEventIdPresent, isUserAttendee, paymentRoute.getEventPayments);
+router.get('/settlePayment/:paymentId', ensure, isPaymentIdPresent, isUserAttendee, paymentRoute.pay);
+router.post('/createPaymentWithoutEvent', ensure, paymentRoute.createPaymentWithoutEvent);
 
 //items
 router.post('/addItemToEvent/:eventId', ensure, isEventIdPresent, isUserAttendee, itemRegistryRoute.addItem);
@@ -82,7 +84,9 @@ function ensure(req, res, next) {
 	if (req.isAuthenticated()) {
 		next();
 	} else {
-		res.send('not authenticated');
+		res.send(format.error({
+      message: 'Forbidden, you are not authenticated'
+    }));
 	}
 }
 
@@ -132,7 +136,27 @@ function isUserAttendee(req, res, next) {
 function isEventIdPresent(req, res, next){
   if(!req.params.eventId){
     res.send(format.error({
-      message: 'EventId must be provided!'
+      message: 'Event id must be provided!'
+    }))
+  }else{
+    next();
+  }
+}
+
+function isPaymentIdPresent(req, res, next){
+  if(!req.params.paymentId){
+    res.send(format.error({
+      message: 'Payment id must be provided!'
+    }))
+  }else{
+    next();
+  }
+}
+
+function isAttendeeIdPresent(req, res, next){
+  if(!req.params.attendeeId){
+    res.send(format.error({
+      message: 'Attendee id must be provided!'
     }))
   }else{
     next();

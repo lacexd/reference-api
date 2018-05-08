@@ -17,6 +17,9 @@ const PaymentSchema = new Schema({
     cost: {
         type: 'Number'
     },
+    name: {
+      type: 'String'
+    },
     currency: {
         type: 'String',
         enum: currencies
@@ -33,13 +36,20 @@ const PaymentSchema = new Schema({
         // when someone enters cost status is expense -- never changes
         // when someone pays money status is payment, when someone confirms the payment status is settled
         // when someone submitter === reciever status is self -- never changes
-        enum: ['expense', 'payment', 'settled', 'self'],
+        enum: ['expense', 'payment', 'settled'],
         defaultsTo: 'expense'
     },
     isApproved: {
         type: 'Boolean',
         default: false
+    },
+    expenseDate: {
+      type: 'Date'
+    },
+    settlementDate: {
+      type: 'Date'
     }
+
 });
 
 mongoose.model('Payment', PaymentSchema);
