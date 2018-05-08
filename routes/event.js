@@ -16,10 +16,10 @@ const authRoute = {
 		});
 		User.findById(req.user.id, (err, user) => {
 			//IMPLEMENT - add creator to attendees as moderator WITH STATUS ACCEPTED
-			if (err) return res.send(err);
+			if (err) return res.send(format.error(err));
 			user.createdEvents.push(event.id);
 			user.save((err) => {
-				if (err) return res.send(err);
+				if (err) return res.send(format.error(err));
 				// res.send(event);
 			});
 			let attendee = new Attendee({
@@ -46,13 +46,16 @@ const authRoute = {
 			})
 			.populate({
 				path: 'attendees',
-                populate: {
-                    path: 'user',
+				populate: {
+					path: 'user',
 					select: 'phoneNumber'
-                }
+				},
+			})
+			.populate({
+				path: 'itemRegistry'
 			})
 			.exec((err, events) => {
-				if (err) return res.send(err);
+				if (err) return res.send(format.error(err));
 
 				var userId = req.user.id;
 				Payment
@@ -65,7 +68,7 @@ const authRoute = {
 					})
 					.populate('user')
 					.exec((err, payments) => {
-						if (err) return res.send(err);
+						if (err) return res.send(format.error(err));
 						res.send({
 							Data: {
 								events: events,
@@ -91,14 +94,14 @@ const authRoute = {
 			res.send('id is missing');
 		} else {
 			Event.findById(req.params.eventId, (err, event) => {
-				if (err) return res.send(err);
+				if (err) return res.send(format.error(err));
 				for (let i in event) {
 					if (req.body[i]) {
 						event[i] = req.body[i];
 					}
 				}
 				event.save((err) => {
-					if (err) return res.send(err);
+					if (err) return res.send(format.error(err));
 					res.send(event);
 				});
 			});
@@ -107,7 +110,7 @@ const authRoute = {
 
 	getEventById(req, res) {
 		Event.findById(req.params.eventId, (err, event) => {
-			if (err) return res.send(err);
+			if (err) return res.send(format.error(err));
 			res.send(event);
 		});
 	},
@@ -129,7 +132,7 @@ const authRoute = {
 				}
 			})
 			.exec((err, user) => {
-				if (err) return res.send(err);
+				if (err) return res.send(format.error(err));
 				res.send(user.createdEvents);
 				// Attendee.populate(user.createdEvents, {
 				//     path: 'attendees'
@@ -156,37 +159,37 @@ const authRoute = {
 				}
 			})
 			.exec((err, user) => {
-				if (err) return res.send(err);
+				if (err) return res.send(format.error(err));
 				res.send(user.invitedEvents);
 			});
 	},
 
 	inviteUser(req, res) {
 		Event.findById(req.params.eventId, (err, event) => {
-			if (err) return res.send(err);
+			if (err) return res.send(format.error(err));
 			User.findOne({
 				phoneNumber: req.body.phoneNumber
 			}, (err, user) => {
-				if(err) format.err(err);
-				if(user){
+				if (err) return res.send(format.err(err));
+				if (user) {
 					const attendeeData = req.body;
 					attendeeData.user = user.id;
 					attendeeData.role = 'default';
 					attendeeData.status = 'default';
 					let attendee = new Attendee(attendeeData);
 					attendee.save((err) => {
-						if (err) return res.send(err);
+						if (err) return res.send(format.error(err));
 						event.attendees.push(attendee.id);
 						event.save((err) => {
-							if (err) res.send(err);
-							res.send(format.success(event,'User invited successfully'));
+							if (err) return res.send(format.error(err));
+							res.send(format.success(event, 'User invited successfully'));
 						});
 					});
 					user.invitedEvents.push(event.id);
 					user.save((err) => {
-						if (err) res.send(err);
+						if (err) return res.send(format.error(err));
 					});
-				}else{
+				} else {
 					res.send('user not found');
 				}
 			});
@@ -195,7 +198,7 @@ const authRoute = {
 
 	addExactPayment(req, res) {
 		Event.findById(req.params.eventId, (err, event) => {
-			if (err) return res.send(err);
+			if (err) return res.send(format.error(err));
 			const paymentData = req.body;
 			paymentData.submitter = req.user.id;
 			if (paymentData.reciever) {
@@ -203,20 +206,20 @@ const authRoute = {
 					phoneNumber: paymentData.reciever
 				}, (err, user) => {
 					if (err && user) {
-						res.send(err);
+						return res.send(format.error(err));
 					} else {
 						paymentData.reciever = user.id;
 						const payment = new Payment(validators.newPayment(paymentData));
 						payment.save((err) => {
 							if (err) {
-								res.send(err);
+								return res.send(format.error(err));
 							} else {
 								event.payments.push(payment.id);
 								event.save((err) => {
 									if (err) {
-										res.send(err);
+										return res.send(format.error(err));
 									} else {
-										res.send(format.success(event,'Payment submitted successfully'));
+										res.send(format.success(event, 'Payment submitted successfully'));
 									}
 								});
 							}
@@ -229,21 +232,21 @@ const authRoute = {
 						id: attendee
 					}, (err, user) => {
 						if (err && user) {
-							res.send(err);
+							return res.send(format.error(err));
 						} else {
 							paymentData.reciever = user.id;
 							req.body.status = 'self';
 							const payment = new Payment(validators.newPayment(paymentData));
 							payment.save((err) => {
 								if (err) {
-									res.send(err);
+									return res.send(format.error(err));
 								} else {
 									event.payments.push(payment.id);
 									event.save((err) => {
 										if (err) {
-											res.send(err);
+											return res.send(format.error(err));
 										} else {
-											res.send(format.success(event,'Payment submitted successfully'));
+											res.send(format.success(event, 'Payment submitted successfully'));
 										}
 									});
 								}
@@ -262,7 +265,7 @@ const authRoute = {
 			})
 			.where('category').equals('exact')
 			.exec((err, events) => {
-				if (err) return res.send(err);
+				if (err) return res.send(format.error(err));
 				res.send(events);
 			});
 	},
@@ -276,14 +279,14 @@ const authRoute = {
 				model: 'Attendee'
 			})
 			.exec((err, event) => {
-				if (err) return res.send(err);
+				if (err) return res.send(format.error(err));
 				var authorizedUserForEvent = event.attendees.find((v) => {
 					return v.user.toString === userId && v.role === 'moderator';
 				});
 				if (authorizedUserForEvent) {
 					event.isMarkedAsDeleted = true;
 					event.save((err) => {
-						if (err) return res.send(err);
+						if (err) return res.send(format.error(err));
 						res.send(201);
 					});
 				} else {
@@ -305,13 +308,13 @@ const authRoute = {
 				attendee.role = req.body.role;
 			}
 			attendee.save((err) => {
-				if (err) return res.send(err);
+				if (err) return res.send(format.error(err));
 				res.send('updated');
 			});
 		});
 	},
 
-	getEventTypes(req, res){
+	getEventTypes(req, res) {
 		EventType.find({}, (err, eventTypes) => {
 			res.send(format.success(eventTypes, 'Event types fetched successfully'))
 		})

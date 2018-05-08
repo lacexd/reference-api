@@ -1,26 +1,27 @@
 const mongoose = require('mongoose');
 const ItemRegistry = mongoose.model('ItemRegistry');
 const Event = mongoose.model('Event');
+const format = require('../lib/response-format');
 const itemRegistryRoute = {
     addItem(req, res) {
         const itemRegistry = new ItemRegistry(req.body);
         itemRegistry.user = req.user.id;
         itemRegistry.save((err) => {
             if (err) return res.send(err);
-        });
-
-        Event.findById(req.params.id, (err, event) => {
-            if (err) return res.send(err);
-            event.itemRegistry.push(itemRegistry.id);
-            event.save((err) => {
+            Event.findById(req.params.eventId, (err, event) => {
+              if (err) return res.send(err);
+              event.itemRegistry.push(itemRegistry.id);
+              event.save((err) => {
                 if (err) res.send(err);
-                res.send('Item successfully added to event');
+                res.send(format.success(itemRegistry, 'Item successfully added to event'));
+              });
             });
         });
+
     },
 
     signUpForItem(req, res) {
-        ItemRegistry.findById(req.params.id, (err, item) => {
+        ItemRegistry.findById(req.params.eventId, (err, item) => {
             if (err) res.send(err);
             item.assigned = req.user.id;
             if (item.quantity === 0) {
