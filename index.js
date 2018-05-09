@@ -20,7 +20,8 @@ const session = require('express-session');
 const uuidv1 = require('uuid/v1');
 const validator = require('express-validator');
 
-app.use('Docbox_files', express.static(__dirname + '/Docbox_files'));
+app.use(express.static(__dirname));
+app.use(express.static('documentation'));
 
 mongoose.connect('mongodb://asd:asd@ds161032.mlab.com:61032/mydb', {
     // server: {

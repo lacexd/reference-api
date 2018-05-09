@@ -15,9 +15,9 @@ const Event = mongoose.model('Event');
 
 router.get('/', (req, res) => {
 	if (req.isAuthenticated()) {
-		res.sendFile(__dirname + '/Docbox.html');
+		res.sendFile(__dirname + '/documentation/documentation.html');
 	} else {
-		res.sendFile(__dirname + '/login.html');
+		res.sendFile(__dirname + '/documentation/index.html');
 	}
 });
 

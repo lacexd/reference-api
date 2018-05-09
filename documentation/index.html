@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+  <title>Soddy API</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Fredoka+One" rel="stylesheet"> 
+</head>
+
+<body>
+  <div class="container">
+    <!-- <div class="form-row"> -->
+      <!-- <label>phone number</label>
+      <input id="pn" class="input" /> -->
+      <div class="group">
+        <input type="text" id="pn" required>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>Phone number</label>
+      </div>
+    <!-- </div> -->
+    <!-- <div class="form-row">
+      <label>code</label>
+      <input id="code" class="input" />
+    </div> -->
+    <div class="group">
+      <input type="text" id="code" required>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <label>Code</label>
+    </div>
+      <button class="button" id="btn">submit</button>
+  </div>
+  <img src="index.jpeg" alt="" class="pic">
+  <script>
+    $('#btn').on('click', function() {
+      $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: '/login',
+        data: JSON.stringify({
+          phoneNumber: $('#pn').val(),
+          code: parseInt($('#code').val())
+        }),
+        success: function() {
+          window.location.reload(false);
+        }
+      })
+    })
+  </script>
+</body>
+
+</html>
