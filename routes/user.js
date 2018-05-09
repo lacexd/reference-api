@@ -3,53 +3,47 @@ const User = mongoose.model('User');
 const format = require('../lib/response-format');
 
 const userRoute = {
-    signUp(req, res, next) {
-        var userData = req.body;
-        User.find({
-            phoneNumber: userData.phoneNumber
-        }, (err, user) => {
-            if (user.length !== 0) {
-                // res.send('exists');
-                next();
-            } else {
-                console.log(userData);
-                var newUser = new User(userData);
-                newUser.save((err) => {
-                    if (err) {
-                        res.send('error');
-                    } else {
-                        next();
-                    }
-                });
-            }
-        });
-    },
+	signUp(req, res, next) {
+		var userData = req.body;
+		User.find({
+			phoneNumber: userData.phoneNumber
+		}, (err, user) => {
+			if (user.length !== 0) {
+				next();
+			} else {
+				var newUser = new User(userData);
+				newUser.save((err) => {
+					if (err) {
+						if(err) return res.send(format.error(err));
+					} else {
+						next();
+					}
+				});
+			}
+		});
+	},
 
-    getProfile(req, res) {
-        User.findById(req.user.id)
-            .populate('invitedEvents')
-            .populate('createdEvents')
-            .exec((err, user) => {
-                res.send(format.success(user, 'User\'s profile fetched successfully'));
-            });
-    },
+	getProfile(req, res) {
+		User.findById(req.user.id, (err, user) => {
+      if(err) return res.send(format.error(err));
+			res.send(format.success(user, 'User\'s profile fetched successfully'));
+		});
+	},
 
-    setProfile(req, res) {
-        User.findById(req.user.id, (err, user) => {
-            for (var i in user) {
-                if (req.body[i] && i !== 'phoneNumber') {
-                    user[i] = req.body[i];
-                }
-            }
-            user.save((err) => {
-                if (err) {
-                    res.send('error happened');
-                } else {
-                    res.send(user);
-                }
-            });
-        });
-    }
+	setProfile(req, res) {
+		User.findById(req.user.id, (err, user) => {
+      if(err) return res.send(format.error(err));
+			for (var i in user) {
+				if (req.body[i] && i !== 'phoneNumber') {
+					user[i] = req.body[i];
+				}
+			}
+			user.save((err) => {
+        if(err) return res.send(format.error(err));
+					res.send(format.success(user, 'User\'s profile updated successfully'));
+			});
+		});
+	}
 };
 
 module.exports = userRoute;

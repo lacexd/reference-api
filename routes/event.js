@@ -120,23 +120,25 @@ const authRoute = {
 
 		getEventById(req, res) {
 			Event.findById(req.params.eventId)
-				.populate({
-					path: 'attendees',
-					populate: {
-						path: 'user',
-						select: 'phoneNumber'
-					}
-				})
-				.populate({
-					path: 'itemRegistry',
-					populate: {
-						path: 'user',
-						select: 'phoneNumber'
-					},
-				}).exec((err, event) => {
+			.populate({
+				path: 'attendees',
+				populate: {
+					path: 'user',
+					select: 'phoneNumber'
+				},
+			})
+			.populate({
+				path: 'itemRegistry',
+				populate: {
+					path: 'user',
+					select: 'phoneNumber'
+				}
+			})
+			.populate({
+				path: 'payments'
+			}).exec((err, event) => {
 					if (err) return res.send(format.error(err));
-
-					res.send(event);
+					res.send(format.success(event, 'Event retrieved successfully'));
 				});
 	},
 
