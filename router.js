@@ -15,11 +15,15 @@ const Event = mongoose.model('Event');
 
 router.get('/', (req, res) => {
 	if (req.isAuthenticated()) {
-		res.sendFile(__dirname + '/documentation/documentation.html');
+		res.redirect('/documentation');
 	} else {
-		res.sendFile(__dirname + '/documentation/index.html');
+		res.sendFile(__dirname + '/documentation/login.html');
 	}
 });
+
+router.get('/documentation', ensure, ((req, res) => {
+	res.sendFile(__dirname + '/documentation/documentation.html');
+}))
 
 //user creation and auth
 // router.post('/signup', userRoute.signUp);
