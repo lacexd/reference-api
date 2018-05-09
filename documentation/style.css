@@ -46,6 +46,20 @@ body {
   font-family: 'Fredoka One', cursive;
 }
 
+@media only screen and (max-width: 600px) {
+  .container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    height: 30%;
+    justify-content: space-around;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    width: 80%;
+  }
+}
+
 
 
 
