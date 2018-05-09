@@ -61,6 +61,9 @@ const authRoute = {
 						select: 'phoneNumber'
 					}
 				})
+				.populate({
+					path: 'payments'
+				})
 				.exec((err, events) => {
 					if (err) return res.send(format.error(err));
 
