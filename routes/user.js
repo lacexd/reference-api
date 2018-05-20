@@ -23,6 +23,24 @@ const userRoute = {
 		});
 	},
 
+	getRegisteredUsers(req, res) {
+		User.find({
+			phoneNumber: {
+				"$in": req.body
+			}
+		}, (err, users) => {
+			if(err) return res.send(format.error(err));
+			const alreadySignedUp = users.map((user) => user.phoneNumber);
+			const notSignedUpUsers = req.body.filter((user) => {
+				return alreadySignedUp.indexOf(user) === -1;
+			})
+			res.send(format.success({
+				alreadySignedUp,
+				notSignedUpUsers
+			}, 'These users are already signed up'));
+		});
+	},
+
 	getProfile(req, res) {
 		User.findById(req.user.id, (err, user) => {
       if(err) return res.send(format.error(err));

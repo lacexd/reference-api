@@ -29,6 +29,7 @@ router.get('/documentation', ensure, ((req, res) => {
 // router.post('/signup', userRoute.signUp);
 router.post('/profile', ensure, userRoute.setProfile);
 router.get('/profile', ensure, userRoute.getProfile);
+router.post('/signedUpUsers', ensure, userRoute.getRegisteredUsers);
 router.post('/login', passport.authenticate('local', {failureRedirect: '/loginFailure'}), (req, res) => {
 	res.send({
 		Data: {
@@ -74,6 +75,8 @@ router.post('/createPaymentWithoutEvent', ensure, paymentRoute.createPaymentWith
 
 //items
 router.post('/addItemToEvent/:eventId', ensure, isEventIdPresent, isUserAttendee, itemRegistryRoute.addItem);
+router.post('/markItemAsDeleted/:itemId', ensure, isItemIdPresent, isUserAttendee, itemRegistryRoute.markItemAsDeleted);
+router.post('/editItem/:itemId', ensure, isItemIdPresent, isUserAttendee, itemRegistryRoute.editItem);
 router.get('/getItemsForAnEvent/:eventId', ensure, isEventIdPresent, isUserAttendee, itemRegistryRoute.getItemsForAnEvent);
 router.post('/subscribeForItem/:eventId', ensure, isEventIdPresent, isUserAttendee, itemRegistryRoute.signUpForItem);
 
@@ -161,6 +164,16 @@ function isAttendeeIdPresent(req, res, next){
   if(!req.params.attendeeId){
     res.send(format.error({
       message: 'Attendee id must be provided!'
+    }))
+  }else{
+    next();
+  }
+}
+
+function isItemIdPresent(req, res, next){
+  if(!req.params.itemId){
+    res.send(format.error({
+      message: 'Item id must be provided'
     }))
   }else{
     next();

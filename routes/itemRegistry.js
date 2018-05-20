@@ -67,6 +67,30 @@ const itemRegistryRoute = {
 				res.send(format.success(items, 'Itemregistry successfully fetched'));
 			});
 		});
+	},
+
+	markItemAsDeleted(req, res) {
+		ItemRegistry.findById(req.params.Item, (err, item) => {
+			if (err) return res.send(format.error(err));
+				item.isMarkedAsDeleted = true;
+				item.save((err) => {
+					if (err) return res.send(format.error(err));
+					res.send(format.success(items, 'Item successfully deleted'));
+				});
+		});
+	},
+
+	editItem(req, res) {
+		ItemRegistry.findById(req.params.Item, (err, item) => {
+			if (err) return res.send(format.error(err));
+				for(var i in req.body){
+					item[i] = req.body[i];
+				}
+				item.save((err) => {
+					if (err) return res.send(format.error(err));
+					res.send(format.success(items, 'Item updated deleted'));
+				});
+		});
 	}
 };
 

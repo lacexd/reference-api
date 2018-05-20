@@ -16,7 +16,11 @@ const ItemSchema = new Schema({
     assignedTo: {
         type: Schema.ObjectId,
         ref: 'User'
-    }
+    },
+    isMarkedAsDeleted: {
+        type: 'Boolean',
+        default: false
+    }    
 });
 
 mongoose.model('ItemRegistry', ItemSchema);
