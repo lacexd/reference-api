@@ -24,15 +24,28 @@ const userRoute = {
 	},
 
 	getRegisteredUsers(req, res) {
+		const bodyPhoneNumbers = req.body.map((user) => user.phoneNumber);
 		User.find({
 			phoneNumber: {
-				"$in": req.body
+				"$in": bodyPhoneNumbers
 			}
 		}, (err, users) => {
 			if(err) return res.send(format.error(err));
-			const alreadySignedUp = users.map((user) => user.phoneNumber);
+			const alreadySignedUp = req.body.filter((user) => {
+				const foundBodyUser = users.find((dbUser) => {
+					return user.phoneNumber === dbUser.phoneNumber;
+				})
+				if(foundBodyUser){
+					return {
+						name: foundBodyUser.name,
+						phoneNumber: user.phoneNumber
+					}
+				}
+			});
+			const alreadySignedUpNumbers = alreadySignedUp.map((v) => v.phoneNumber);
+
 			const notSignedUpUsers = req.body.filter((user) => {
-				return alreadySignedUp.indexOf(user) === -1;
+				return alreadySignedUpNumbers.indexOf(user.phoneNumber) === -1;
 			})
 			res.send(format.success({
 				alreadySignedUp,
