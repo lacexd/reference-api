@@ -78,7 +78,7 @@ router.post('/addItemToEvent/:eventId', ensure, isEventIdPresent, isUserAttendee
 router.post('/markItemAsDeleted/:itemId', ensure, isItemIdPresent, isUserAttendee, itemRegistryRoute.markItemAsDeleted);
 router.post('/editItem/:itemId', ensure, isItemIdPresent, isUserAttendee, itemRegistryRoute.editItem);
 router.get('/getItemsForAnEvent/:eventId', ensure, isEventIdPresent, isUserAttendee, itemRegistryRoute.getItemsForAnEvent);
-router.post('/subscribeForItem/:eventId', ensure, isEventIdPresent, isUserAttendee, itemRegistryRoute.signUpForItem);
+router.post('/subscribeForItem/:itemId', ensure, isItemIdPresent, itemRegistryRoute.signUpForItem);
 
 //notes
 //fetch item registry related to an event

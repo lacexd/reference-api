@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const ItemRegistry = mongoose.model('ItemRegistry');
 const Event = mongoose.model('Event');
 const Payment = mongoose.model('Payment');
+const User = mongoose.model('User');
+const ItemQuantity = mongoose.model('ItemQuantity');
 const format = require('../lib/response-format');
+const _ = require('underscore');
 const itemRegistryRoute = {
 	addItem(req, res) {
     let itemRegistry = [];
@@ -34,28 +37,52 @@ const itemRegistryRoute = {
 	},
 
 	signUpForItem(req, res) {
-		ItemRegistry.findById(req.params.eventId, (err, item) => {
-			if (err) return res.send(format.error(err));
-			item.assigned = req.user.id;
-			if (item.quantity === 0) {
-				res.send(format.error({
-					message: 'you can not subscribe for this item because the quantity is already 0'
-				}));
-			} else {
-				item.quantity -= req.body.quantity ? req.body.quantity : 1;
-				item.save((err) => {
+		ItemRegistry.findById(req.params.itemId, (err, item) => {
+				if (err) return res.send(format.error(err));
+				User.find({
+					phoneNumber: req.body.map((user) => user.phoneNumber)
+				}, (err, users) => {
 					if (err) return res.send(format.error(err));
-					const payment = new Payment(req.body);
-					payment.save((err) => {
+					// const recordsPopulatedWithIds =	_.values(_.extend(_.indexBy(users, 'phoneNumber'), _.indexBy(req.body, 'phoneNumber'))).map((quantity) => {
+					// 	quantity.user = quantity.id;
+					// 	return quantity;
+					// });
+					const recordsPopulatedWithIds = req.body.map((quantity) => {
+						const foundUser = users.find((user) => {
+							return user.phoneNumber === quantity.phoneNumber;
+						})
+						if(foundUser){
+							quantity.user = foundUser.id;
+							return quantity;
+						}
+						return null;
+					}).filter((body) => body);
+
+
+					console.log(recordsPopulatedWithIds);
+					ItemQuantity.insertMany(recordsPopulatedWithIds, (err, quantities) => {
 						if (err) return res.send(format.error(err));
-						res.send(format.success({
-							item,
-							payment
-						}), 'User subscribed for the item')
-					})
-				});
-			}
+						if(!item.assignedTo.constructor === Array){
+							item.assignedTo = [];
+						}
+						const quantityIds = quantities.map((quantity) => quantity.id);
+						item.assignedTo.push(quantityIds);
+						item.assignedTo = [].concat(...item.assignedTo);
+						const sumOfQuanitities = quantities.reduce((sum, quantity) => {
+							sum += quantity.quantity;
+							return sum;
+						}, 0);
+						item.quantity -= sumOfQuanitities;
+						item.save((err) => {
+							if (err) return res.send(format.error(err));
+							res.send(format.success(quantities, 'Users were assigned to item successfully'));
+						})
+					});
+				})
 		});
+
+
+
 	},
 
 	getItemsForAnEvent(req, res) {
@@ -63,7 +90,11 @@ const itemRegistryRoute = {
 			if (err) return res.send(format.error(err));
 			ItemRegistry.find({
 				_id: event.itemRegistry
-			}, (err, items) => {
+			})
+			.populate({
+				path: 'assignedTo'
+			})
+			.exec((err, items) => {
 				if (err) return res.send(format.error(err));
 				res.send(format.success(items, 'Itemregistry successfully fetched'));
 			});

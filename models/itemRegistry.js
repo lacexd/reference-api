@@ -13,14 +13,14 @@ const ItemSchema = new Schema({
         type: 'Number',
         default: 1
     },
-    assignedTo: {
-        type: Schema.ObjectId,
-        ref: 'User'
-    },
+    assignedTo: [{
+      type: Schema.ObjectId,
+      ref: 'ItemQuantity'
+    }],
     isMarkedAsDeleted: {
         type: 'Boolean',
         default: false
-    }    
+    },
 });
 
 mongoose.model('ItemRegistry', ItemSchema);
