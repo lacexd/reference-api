@@ -52,7 +52,7 @@ const userRoute = {
 		User.findById(req.user.id, (err, user) => {
       if(err) return res.send(format.error(err));
 			for (var i in user) {
-				if (req.body[i] && i !== 'phoneNumber') {
+				if (req.body[i]) {
 					user[i] = req.body[i];
 				}
 			}

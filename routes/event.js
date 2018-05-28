@@ -5,7 +5,7 @@ const Payment = mongoose.model('Payment');
 const Attendee = mongoose.model('Attendee');
 const EventType = mongoose.model('EventType');
 const format = require('../lib/response-format');
-const authRoute = {
+const eventRoute = {
 		createEvent(req, res) {
 			//calculate end date based on start date and event length
 			req.body.host = mongoose.Types.ObjectId(req.user.id);
@@ -366,4 +366,4 @@ const validators = {
 	}
 };
 
-module.exports = authRoute;
+module.exports = eventRoute;

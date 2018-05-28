@@ -20,6 +20,7 @@
     "express-validator": "^4.3.0",
     "hat": "0.0.3",
     "helmet": "^3.10.0",
+    "json-api": "^3.0.0-beta.26",
     "money": "^0.2.0",
     "mongoose": "^5.0.3",
     "passport": "^0.3.2",

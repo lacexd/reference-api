@@ -63,7 +63,7 @@ function messageUSNumber(code, phoneNumber){
     client.messages.create({
         from: '+12108997218',
         to: phoneNumber,
-        body: 'Hello, this is your code: ' + code,
+        body: 'Hello, Your one time password for Soddy login is: ' + code,
     }).then((message) => {
         console.log(message);
     });
@@ -71,7 +71,7 @@ function messageUSNumber(code, phoneNumber){
 
 function messageIndianNumber(code, phoneNumber){
     var phoneNumberWithoutPlus = phoneNumber.toString().substring(3);
-    request.get('http://103.233.79.246//submitsms.jsp?user=RadyasLC&key=851a8dfba3XX&mobile=' + phoneNumberWithoutPlus + '&message=' + code + '&senderid=MSODDY&accusage=1', {}, function(err, res) {
+    request.get('http://103.233.79.246//submitsms.jsp?user=RadyasLC&key=851a8dfba3XX&mobile=' + phoneNumberWithoutPlus + '&message=Hello, Your one time password for Soddy login is: ' + code + '&senderid=MSODDY&accusage=1', {}, function(err, res) {
         console.log(res);
     });
 }
