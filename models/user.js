@@ -55,8 +55,7 @@ const UserSchema = new Schema({
         ref: 'Event'
     }],
     appInstalled: {
-        type: Boolean,
-        default: true
+        type: 'Boolean'
     },
 });
 

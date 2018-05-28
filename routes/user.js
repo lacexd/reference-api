@@ -51,14 +51,24 @@ const userRoute = {
 	setProfile(req, res) {
 		User.findById(req.user.id, (err, user) => {
       if(err) return res.send(format.error(err));
+			let phoneNumberChanged = false;
 			for (var i in user) {
-				if (req.body[i]) {
+				if (req.body[i] && i !== 'phoneNumber') {
 					user[i] = req.body[i];
+				}
+				if(i === 'phoneNumber'){
+					user.phoneNumber = req.body.phoneNumber;
+					phoneNumberChanged = true;
 				}
 			}
 			user.save((err) => {
         if(err) return res.send(format.error(err));
+				if(phoneNumberChanged){
+					req.logout();
+					res.send(format.success({}, 'User was logged out successfully'));
+				}else{
 					res.send(format.success(user, 'User\'s profile updated successfully'));
+				}
 			});
 		});
 	}
