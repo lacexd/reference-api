@@ -20,6 +20,7 @@ const itemRegistryRoute = {
 			if (err) return res.send(format.error(err));
 			Event.findById(req.params.eventId, (err, event) => {
 				if (err) return res.send(format.error(err));
+				event.itemRegistry = true;
         items.forEach((v) => {
           event.itemRegistry.push(v.id);
         })
