@@ -23,6 +23,7 @@
     "json-api": "^3.0.0-beta.26",
     "money": "^0.2.0",
     "mongoose": "^5.0.3",
+    "morgan": "^1.9.0",
     "passport": "^0.3.2",
     "passport-custom": "^1.0.5",
     "twilio": "^3.11.2",

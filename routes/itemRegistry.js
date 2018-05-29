@@ -65,9 +65,11 @@ const itemRegistryRoute = {
 						if(!item.assignedTo.constructor === Array){
 							item.assignedTo = [];
 						}
-						const quantityIds = quantities.map((quantity) => quantity.id);
-						item.assignedTo.push(quantityIds);
-						item.assignedTo = [].concat(...item.assignedTo);
+						quantities.forEach((quantity) => {
+							item.assignedTo.push(quantity.id);
+						});
+						// item.assignedTo.push(quantityIds);
+						// item.assignedTo = [].concat(...item.assignedTo);
 						const sumOfQuanitities = quantities.reduce((sum, quantity) => {
 							sum += quantity.quantity;
 							return sum;

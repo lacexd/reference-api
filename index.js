@@ -20,7 +20,9 @@ const connection = mongoose.connection;
 const session = require('express-session');
 const uuidv1 = require('uuid/v1');
 const validator = require('express-validator');
+const morgan = require('morgan');
 
+app.use(morgan('combined'));
 app.use(express.static(__dirname));
 app.use(express.static('documentation'));
 
