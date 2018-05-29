@@ -57,7 +57,7 @@ router.get('/events', ensure, eventRoute.getEveryEvent);
 router.post('/event/:eventId', ensure, isEventIdPresent, isUserAdmin, eventRoute.updateEvent);
 router.get('/event/:eventId', ensure, isEventIdPresent, isUserAttendee, eventRoute.getEventById);
 router.post('/event/payment/:eventId', ensure, isEventIdPresent, isUserAttendee, eventRoute.addExactPayment);
-router.post('/event/invite/:eventId', ensure, isEventIdPresent, isUserAttendee, userRoute.signUp, eventRoute.inviteUser);
+router.post('/event/invite/:eventId', ensure, isEventIdPresent, isUserAttendee, eventRoute.inviteUser);
 router.get('/usersEvents', ensure, eventRoute.getUsersEvents);
 router.get('/invitedEvents', ensure, eventRoute.getInvitedEvents);
 router.get('/createdEvents', ensure, eventRoute.getUsersEvents);
@@ -112,7 +112,9 @@ function isUserAdmin(req, res, next) {
 			});
 
 			if (attendee.isCreator) next();
-			res.send('you are not authorized');
+			res.send(format.error({
+				message: 'Unsufficient provilege'
+			}))
 		});
 }
 
@@ -135,7 +137,9 @@ function isUserAttendee(req, res, next) {
 			if (attendee) {
 				next();
 			} else {
-				res.send('you are not authorized');
+				res.send(format.error({
+					message: 'Unsufficient provilege'
+				}))
 			}
 		});
 }

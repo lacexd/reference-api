@@ -57,8 +57,11 @@ const eventRoute = {
 				.populate({
 					path: 'itemRegistry',
 					populate: {
-						path: 'user',
-						select: 'phoneNumber'
+						path: 'assignedTo',
+						populate: {
+							path: 'user',
+							select: 'phoneNumber'
+						}
 					}
 				})
 				.populate({
@@ -130,8 +133,11 @@ const eventRoute = {
 			.populate({
 				path: 'itemRegistry',
 				populate: {
-					path: 'user',
-					select: 'phoneNumber'
+					path: 'assignedTo',
+					populate: {
+						path: 'user',
+						select: 'phoneNumber'
+					}
 				}
 			})
 			.populate({
@@ -194,30 +200,45 @@ const eventRoute = {
 	inviteUser(req, res) {
 		Event.findById(req.params.eventId, (err, event) => {
 			if (err) return res.send(format.error(err));
-			User.findOne({
-				phoneNumber: req.body.phoneNumber
-			}, (err, user) => {
-				if (err) return res.send(format.err(err));
-				if (user) {
-					const attendeeData = req.body;
-					attendeeData.user = user.id;
-					attendeeData.role = 'default';
-					attendeeData.status = 'default';
-					let attendee = new Attendee(attendeeData);
-					attendee.save((err) => {
+			console.log(req.body)
+			User.find({
+				phoneNumber: req.body.map((user) => user.phoneNumber)
+			}, (err, users) => {
+				if (err) return res.send(format.error(err));
+				if (users) {
+					const attendees = users.map((user) => {
+						return {
+							user: user.id,
+							role: 'default',
+							status: 'default'
+						};
+					})
+					Attendee.insertMany(attendees, (err, attendees) => {
 						if (err) return res.send(format.error(err));
-						event.attendees.push(attendee.id);
-						event.save((err) => {
-							if (err) return res.send(format.error(err));
-							res.send(format.success(event, 'User invited successfully'));
+						attendees.forEach((attendee) => {
+							event.attendees.push(attendee.id)
 						});
-					});
-					user.invitedEvents.push(event.id);
-					user.save((err) => {
-						if (err) return res.send(format.error(err));
+						const savePromises = [];
+						const eventPromise = event.save((err) => {
+							if (err) return res.send(format.error(err));
+						});
+						savePromises.push(eventPromise);
+						users.forEach((user) => {
+							user.invitedEvents.push(event.id);
+							savePromises.push(user.save((err) => {
+								if (err) return res.send(format.error(err));
+							}));
+						});
+						Promise.all(savePromises).then(() => {
+							res.send(format.success(event, 'users invited successfully'));
+						}).catch((err) => {
+							res.send(format.error(err));
+						})
 					});
 				} else {
-					res.send('user not found');
+					res.send(format.error({
+						message: 'users were not found'
+					}));
 				}
 			});
 		});

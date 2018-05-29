@@ -43,10 +43,6 @@ const itemRegistryRoute = {
 					phoneNumber: req.body.map((user) => user.phoneNumber)
 				}, (err, users) => {
 					if (err) return res.send(format.error(err));
-					// const recordsPopulatedWithIds =	_.values(_.extend(_.indexBy(users, 'phoneNumber'), _.indexBy(req.body, 'phoneNumber'))).map((quantity) => {
-					// 	quantity.user = quantity.id;
-					// 	return quantity;
-					// });
 					const recordsPopulatedWithIds = req.body.map((quantity) => {
 						const foundUser = users.find((user) => {
 							return user.phoneNumber === quantity.phoneNumber;
@@ -58,8 +54,6 @@ const itemRegistryRoute = {
 						return null;
 					}).filter((body) => body);
 
-
-					console.log(recordsPopulatedWithIds);
 					ItemQuantity.insertMany(recordsPopulatedWithIds, (err, quantities) => {
 						if (err) return res.send(format.error(err));
 						if(!item.assignedTo.constructor === Array){
@@ -68,8 +62,6 @@ const itemRegistryRoute = {
 						quantities.forEach((quantity) => {
 							item.assignedTo.push(quantity.id);
 						});
-						// item.assignedTo.push(quantityIds);
-						// item.assignedTo = [].concat(...item.assignedTo);
 						const sumOfQuanitities = quantities.reduce((sum, quantity) => {
 							sum += quantity.quantity;
 							return sum;
@@ -82,9 +74,6 @@ const itemRegistryRoute = {
 					});
 				})
 		});
-
-
-
 	},
 
 	getItemsForAnEvent(req, res) {
