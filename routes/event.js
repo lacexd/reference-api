@@ -344,7 +344,7 @@ const eventRoute = {
 	},
 
 	updateEventsAttendee(req, res) {
-		const attendeeId = req.params.ateendeeId;
+		const attendeeId = req.params.attendeeId;
 		Attendee.findById(attendeeId, (err, attendee) => {
 			if (req.body.status) {
 				attendee.status = req.body.status;
