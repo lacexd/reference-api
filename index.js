@@ -26,7 +26,7 @@ app.use(morgan('combined'));
 app.use(express.static(__dirname));
 app.use(express.static('documentation'));
 
-mongoose.connect('mongodb://asd:asd@ds161032.mlab.com:61032/mydb', {
+mongoose.connect('<mongodburl>', {
     // server: {
     //     socketOptions: {
     //         keepAlive: 300000,
